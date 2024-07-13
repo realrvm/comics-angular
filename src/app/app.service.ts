@@ -1,10 +1,21 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import {
+  computed,
+  DestroyRef,
+  inject,
+  Injectable,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DEBOUNCE_TIME, MOBILE_BREAKPOINT } from '@shared/constants';
+import { debounceTime, fromEvent, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppService {
+  private width = signal<number>(window.innerWidth);
+  private destroyRef = inject(DestroyRef);
+
   private aboutSubject = new Subject<boolean>();
   public aboutDrawerVisible$ = this.aboutSubject.asObservable();
 
@@ -17,5 +28,19 @@ export class AppService {
 
   public setContactsDrawerVisible(isVisible: boolean): void {
     this.contactsSubject.next(isVisible);
+  }
+
+  public isDesktopWidth = computed(() => {
+    return this.width() > MOBILE_BREAKPOINT;
+  });
+
+  public calcWindowWidth() {
+    fromEvent(window, 'resize')
+      .pipe(
+        debounceTime(DEBOUNCE_TIME),
+        tap((w) => this.width.set((w.target as Window).innerWidth)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }
