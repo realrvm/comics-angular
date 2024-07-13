@@ -18,7 +18,7 @@ export class ContactsDrawerComponent implements OnInit {
 
   public contactsDrawer!: boolean;
 
-  public closeContactsDrawer(): void {
+  public onClose(): void {
     this.appService.setContactsDrawerVisible(false);
   }
 

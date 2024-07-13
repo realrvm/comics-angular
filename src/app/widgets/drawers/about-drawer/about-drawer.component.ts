@@ -18,8 +18,8 @@ export class AboutDrawerComponent implements OnInit {
 
   public aboutDrawer!: boolean;
 
-  public closeAboutDrawer() {
-    this.appService.setAboutDrawerVisible(false);
+  public onClose(): void {
+    this.appService.setAboutDrawerVisible(false)
   }
 
   ngOnInit(): void {

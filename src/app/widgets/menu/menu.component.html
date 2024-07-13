@@ -7,12 +7,14 @@
   <li
     (click)="setAboutDrawerVisible()"
     class="hover:text-beige transition duration-300 cursor-pointer"
+    [class.text-beige]="isAboutActive()"
   >
     About
   </li>
   <li
     (click)="setContactsDrawerVisible()"
     class="hover:text-beige transition duration-300 cursor-pointer"
+    [class.text-beige]="isContactsActive()"
   >
     Contacts
   </li>

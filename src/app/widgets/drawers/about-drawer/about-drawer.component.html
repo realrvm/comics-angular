@@ -1,4 +1,4 @@
-<p-sidebar [(visible)]="aboutDrawer" position="right">
+<p-sidebar [(visible)]="aboutDrawer" position="right" (onHide)="onClose()">
   <ng-template pTemplate="headless">
     <div class="font-yatra flex flex-col items-center pb-10">
       <h3 class="text-beige text-3xl !font-vinque">Story</h3>
@@ -20,7 +20,7 @@
       </p>
       <p class="text-light text-2xl text-center mb-8">Age rating 14+</p>
       <button
-        (click)="closeAboutDrawer()"
+        (click)="onClose()"
         class="border border-beige rounded-lg py-3 px-6 md:hidden text-beige text-xl hover:text-light hover:border-light transition duration-300"
       >
         Back

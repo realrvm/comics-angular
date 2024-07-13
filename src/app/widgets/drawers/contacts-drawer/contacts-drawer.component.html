@@ -1,4 +1,4 @@
-<p-sidebar [(visible)]="contactsDrawer" position="right">
+<p-sidebar [(visible)]="contactsDrawer" position="right" (onHide)="onClose()">
   <ng-template pTemplate="headless">
     <div class="font-yatra flex flex-col items-center">
       <h3 class="text-beige text-3xl !font-vinque">Contacts</h3>
@@ -30,7 +30,7 @@
         BOOSTY
       </a>
       <button
-        (click)="closeContactsDrawer()"
+        (click)="onClose()"
         class="border border-beige rounded-lg py-3 px-6 md:hidden text-beige text-xl mt-8 hover:text-light hover:border-light transition duration-300"
       >
         Back
