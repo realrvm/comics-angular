@@ -1,0 +1,19 @@
+<ul
+  class="flex flex-col md:flex-row items-center uppercase text-light font-vinque text-2xl gap-5 md:gap-8"
+>
+  <li class="hover:text-beige transition duration-300 cursor-pointer">
+    <a routerLink="/content">Read</a>
+  </li>
+  <li
+    (click)="setAboutDrawerVisible()"
+    class="hover:text-beige transition duration-300 cursor-pointer"
+  >
+    About
+  </li>
+  <li
+    (click)="setContactsDrawerVisible()"
+    class="hover:text-beige transition duration-300 cursor-pointer"
+  >
+    Contacts
+  </li>
+</ul>
