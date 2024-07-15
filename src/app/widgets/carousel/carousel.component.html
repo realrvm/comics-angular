@@ -1,0 +1,20 @@
+<div class="self-center">
+  j
+  <p-carousel [value]="images" [numVisible]="1" [numScroll]="1">
+    <ng-template let-picture pTemplate="item">
+      <div class="block max-w-[1000px] w-full">
+        <img
+          [src]="picture.path"
+          [alt]="picture.id"
+          class="w-full h-full object-contain"
+        />
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>
+
+<span
+  class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200 px-4 mt-auto"
+  (click)="goHome()"
+  >Back</span
+>

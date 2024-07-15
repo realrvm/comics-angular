@@ -20,6 +20,10 @@ export class SidebarComponent implements OnInit {
     this.router.navigate(['']);
   }
 
+  public goChapterOne() {
+    this.router.navigate(['/chapter/1']);
+  }
+
   ngOnInit(): void {
     this.appService.calcWindowWidth();
   }

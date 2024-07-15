@@ -1,6 +1,6 @@
 :host {
   @apply block h-full bg-black bg-bg-mobile md:bg-bg-desktop bg-auto md:bg-cover bg-top md:bg-center relative z-10
   before:absolute before:inset-0 bg-no-repeat before:rotate-180 md:before:rotate-0 md:before:-z-10
-  before:bg-[linear-gradient(180deg,#000000_8.45%,rgba(0,0,0,0.79462)29.87%,rgba(84,84,84,0)92.14%)]
-  md:before:bg-[linear-gradient(180deg,#000000_21.85%,rgba(21,21,21,0.79462)34.63%,rgba(102,102,102,0)100%)];
+  before:bg-[linear-gradient(_180deg,_#000000_8.45%,_rgba(0,0,0,0.79462)_29.87%,_rgba(84,84,84,0)_92.14%)]
+  md:before:bg-[linear-gradient(_180deg,_#000000_21.85%,_rgba(21,21,21,0.79462)_34.63%,_rgba(102,102,102,_0)_100%)];
 }
