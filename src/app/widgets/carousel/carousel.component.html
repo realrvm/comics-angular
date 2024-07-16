@@ -1,6 +1,11 @@
 <div class="self-center">
-  j
-  <p-carousel [value]="images" [numVisible]="1" [numScroll]="1">
+  <p-carousel
+    [value]="images"
+    [numVisible]="1"
+    [numScroll]="1"
+    [showIndicators]="false"
+    [showNavigators]="isDesktop() ? true : false"
+  >
     <ng-template let-picture pTemplate="item">
       <div class="block max-w-[1000px] w-full">
         <img
@@ -13,8 +18,10 @@
   </p-carousel>
 </div>
 
-<span
-  class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200 px-4 mt-auto"
-  (click)="goHome()"
-  >Back</span
->
+@if (!isDesktop()) {
+  <span
+    class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200 px-4 mt-auto"
+    (click)="goHome()"
+    >Back</span
+  >
+}
