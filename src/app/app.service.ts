@@ -6,7 +6,11 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DEBOUNCE_TIME, MOBILE_BREAKPOINT } from '@shared/constants';
+import {
+  DEBOUNCE_TIME,
+  DESKTOP_BREAKPOINT,
+  MOBILE_BREAKPOINT,
+} from '@shared/constants';
 import { debounceTime, fromEvent, Subject, tap } from 'rxjs';
 
 @Injectable({
@@ -31,6 +35,10 @@ export class AppService {
   }
 
   public isDesktopWidth = computed(() => {
+    return this.width() > DESKTOP_BREAKPOINT;
+  });
+
+  public isMobileWidth = computed(() => {
     return this.width() > MOBILE_BREAKPOINT;
   });
 

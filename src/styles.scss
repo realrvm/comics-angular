@@ -4,13 +4,13 @@
 
 body,
 html {
-  @apply h-full;
+  height: 100svh;
 }
 
 .p-sidebar {
   background-color: #000;
   padding: 36px 44px 12px;
-  height: 100vh;
+  height: 100svh;
   width: 444px;
 }
 

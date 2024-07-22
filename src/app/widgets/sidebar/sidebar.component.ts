@@ -21,7 +21,7 @@ export class SidebarComponent implements OnInit {
   }
 
   public goChapterOne() {
-    this.router.navigate(['/chapter/1']);
+    this.router.navigate(['']);
   }
 
   ngOnInit(): void {

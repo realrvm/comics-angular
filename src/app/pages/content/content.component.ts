@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CarouselComponent } from '@widgets/carousel/carousel.component';
+import { PicturesComponent } from '@widgets/pictures/pictures.component';
 import { SidebarComponent } from '@widgets/sidebar/sidebar.component';
 import { AppService } from 'src/app/app.service';
 
 @Component({
   selector: 'azra-content',
   standalone: true,
-  imports: [SidebarComponent, CarouselComponent],
+  imports: [SidebarComponent, PicturesComponent],
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss',
 })
