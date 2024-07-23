@@ -21,8 +21,7 @@
     "baseUrl": "./",
     "paths": {
       "@pages/*": ["src/app/pages/*"],
-      "@widgets/*": ["src/app/widgets/*"],
-      "@shared/*": ["src/app/shared/*"],
+      "@core/*": ["src/app/core/*"],
       "@images/*": ["src/assets/images/*"],
       "@svg/*": ["src/assets/svg/*"]
     },

@@ -10,13 +10,13 @@ import {
   DEBOUNCE_TIME,
   DESKTOP_BREAKPOINT,
   MOBILE_BREAKPOINT,
-} from '@shared/constants';
+} from '@core/shared/constants';
 import { debounceTime, fromEvent, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AppService {
+export class AppWidthService {
   private width = signal<number>(window.innerWidth);
   private destroyRef = inject(DestroyRef);
 

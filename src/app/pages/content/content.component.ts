@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { PicturesComponent } from '@widgets/pictures/pictures.component';
-import { SidebarComponent } from '@widgets/sidebar/sidebar.component';
-import { AppService } from 'src/app/app.service';
+import { AppWidthService } from '@core/services/app-width.service';
+import { PicturesComponent } from '@core/widgets/pictures/pictures.component';
+import { SidebarComponent } from '@core/widgets/sidebar/sidebar.component';
 
 @Component({
   selector: 'azra-content',
@@ -11,7 +11,7 @@ import { AppService } from 'src/app/app.service';
   styleUrl: './content.component.scss',
 })
 export class ContentComponent implements OnInit {
-  private appService = inject(AppService);
+  private appService = inject(AppWidthService);
 
   public isDesktop = this.appService.isDesktopWidth;
 

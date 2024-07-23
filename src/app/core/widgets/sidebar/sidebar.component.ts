@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SvgIconComponent } from '@shared/svg-icon/svg-icon.component';
-import { AppService } from 'src/app/app.service';
+import { AppWidthService } from '@core/services/app-width.service';
+import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
 
 @Component({
   selector: 'azra-sidebar',
@@ -12,7 +12,7 @@ import { AppService } from 'src/app/app.service';
 })
 export class SidebarComponent implements OnInit {
   private router = inject(Router);
-  private appService = inject(AppService);
+  private appService = inject(AppWidthService);
 
   public isDesktop = this.appService.isDesktopWidth;
 

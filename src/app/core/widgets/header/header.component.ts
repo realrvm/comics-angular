@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { SvgIconComponent } from '@shared/svg-icon/svg-icon.component';
-import { MenuComponent } from '@widgets/menu/menu.component';
-import { AppService } from 'src/app/app.service';
+import { AppWidthService } from '@core/services/app-width.service';
+import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
+import { MenuComponent } from '@core/widgets/menu/menu.component';
 
 @Component({
   selector: 'azra-header',
@@ -11,7 +11,7 @@ import { AppService } from 'src/app/app.service';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent implements OnInit {
-  private appService = inject(AppService);
+  private appService = inject(AppWidthService);
 
   public isDesktopWidth = this.appService.isDesktopWidth;
 

@@ -1,9 +1,9 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SvgIconComponent } from '@shared/svg-icon/svg-icon.component';
+import { AppWidthService } from '@core/services/app-width.service';
+import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { tap } from 'rxjs';
-import { AppService } from 'src/app/app.service';
 
 @Component({
   selector: 'azra-contacts-drawer',
@@ -13,7 +13,7 @@ import { AppService } from 'src/app/app.service';
   styleUrl: './contacts-drawer.component.scss',
 })
 export class ContactsDrawerComponent implements OnInit {
-  private appService = inject(AppService);
+  private appService = inject(AppWidthService);
   private destroyRef = inject(DestroyRef);
 
   public contactsDrawer!: boolean;
