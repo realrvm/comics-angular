@@ -1,54 +1,32 @@
-import {
-  computed,
-  DestroyRef,
-  inject,
-  Injectable,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  DEBOUNCE_TIME,
-  DESKTOP_BREAKPOINT,
-  MOBILE_BREAKPOINT,
-} from '@core/shared/constants';
-import { debounceTime, fromEvent, Subject, tap } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { DEBOUNCE_TIME } from '@core/shared/constants';
+import { debounceTime, fromEvent, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppWidthService {
-  private width = signal<number>(window.innerWidth);
-  private destroyRef = inject(DestroyRef);
-
-  private aboutSubject = new Subject<boolean>();
-  public aboutDrawerVisible$ = this.aboutSubject.asObservable();
-
-  private contactsSubject = new Subject<boolean>();
-  public contactsDrawerVisible$ = this.contactsSubject.asObservable();
-
-  public setAboutDrawerVisible(isVisible: boolean): void {
-    this.aboutSubject.next(isVisible);
-  }
-
-  public setContactsDrawerVisible(isVisible: boolean): void {
-    this.contactsSubject.next(isVisible);
-  }
-
-  public isDesktopWidth = computed(() => {
-    return this.width() > DESKTOP_BREAKPOINT;
+  public width = toSignal(this.calcWidth(), {
+    initialValue: window.innerWidth,
   });
 
-  public isMobileWidth = computed(() => {
-    return this.width() > MOBILE_BREAKPOINT;
-  });
+  public aboutDrawerVisibility = signal<boolean>(false);
 
-  public calcWindowWidth() {
-    fromEvent(window, 'resize')
-      .pipe(
-        debounceTime(DEBOUNCE_TIME),
-        tap((w) => this.width.set((w.target as Window).innerWidth)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe();
+  public contactsDrawerVisibility = signal<boolean>(false);
+
+  public setAboutDrawerVisibility(isVisible: boolean): void {
+    this.aboutDrawerVisibility.set(isVisible);
+  }
+
+  public setContactsDrawerVisibility(isVisible: boolean): void {
+    this.contactsDrawerVisibility.set(isVisible);
+  }
+
+  private calcWidth() {
+    return fromEvent(window, 'resize').pipe(
+      debounceTime(DEBOUNCE_TIME),
+      map((w) => (w.target as Window).innerWidth),
+    );
   }
 }

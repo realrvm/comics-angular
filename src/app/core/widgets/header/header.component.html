@@ -1,4 +1,5 @@
-@if (isDesktopWidth()) {
+@let isDesktop = width() > DESKTOP_BREAKPOINT;
+@if (isDesktop) {
   <div class="flex items-center gap-8 pt-9 mx-auto max-w-[641px] text-beige">
     <svg icon="sprite" id="decoration" class="h-[53px]"></svg>
     <h1 class="text-3xl md:text-5xl font-vinque text-center uppercase">

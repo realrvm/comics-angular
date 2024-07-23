@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AppWidthService } from '@core/services/app-width.service';
+import { DESKTOP_BREAKPOINT } from '@core/shared/constants';
 import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
 import { MenuComponent } from '@core/widgets/menu/menu.component';
 
@@ -10,12 +11,9 @@ import { MenuComponent } from '@core/widgets/menu/menu.component';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   private appService = inject(AppWidthService);
+  public DESKTOP_BREAKPOINT = DESKTOP_BREAKPOINT
 
-  public isDesktopWidth = this.appService.isDesktopWidth;
-
-  ngOnInit(): void {
-    this.appService.calcWindowWidth();
-  }
+  public width = this.appService.width;
 }

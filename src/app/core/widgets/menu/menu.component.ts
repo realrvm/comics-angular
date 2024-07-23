@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AppWidthService } from '@core/services/app-width.service';
 
@@ -12,14 +11,14 @@ import { AppWidthService } from '@core/services/app-width.service';
 })
 export class MenuComponent {
   private appService = inject(AppWidthService);
-  public isAboutActive = toSignal(this.appService.aboutDrawerVisible$);
-  public isContactsActive = toSignal(this.appService.contactsDrawerVisible$);
+  public isAboutActive = this.appService.aboutDrawerVisibility;
+  public isContactsActive = this.appService.contactsDrawerVisibility;
 
   public setContactsDrawerVisible(): void {
-    this.appService.setContactsDrawerVisible(true);
+    this.appService.setContactsDrawerVisibility(true);
   }
 
   public setAboutDrawerVisible(): void {
-    this.appService.setAboutDrawerVisible(true);
+    this.appService.setAboutDrawerVisibility(true);
   }
 }

@@ -1,4 +1,5 @@
-@if (isDesktop()) {
+@let isDesktop = width() > DESKTOP_BREAKPOINT;
+@if (isDesktop) {
   <h2
     class="text-beige font-vinque text-[48px] uppercase text-center leading-[52px] cursor-pointer hover:text-light transition duration-200"
     (click)="goHome()"

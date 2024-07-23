@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { Router } from '@angular/router';
 import { AppWidthService } from '@core/services/app-width.service';
+import { DESKTOP_BREAKPOINT } from '@core/shared/constants';
 import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
 
 @Component({
@@ -10,11 +11,11 @@ import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
   private router = inject(Router);
   private appService = inject(AppWidthService);
-
-  public isDesktop = this.appService.isDesktopWidth;
+  public width = this.appService.width;
+  public DESKTOP_BREAKPOINT = DESKTOP_BREAKPOINT;
 
   public goHome() {
     this.router.navigate(['']);
@@ -22,9 +23,5 @@ export class SidebarComponent implements OnInit {
 
   public goChapterOne() {
     this.router.navigate(['']);
-  }
-
-  ngOnInit(): void {
-    this.appService.calcWindowWidth();
   }
 }

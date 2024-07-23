@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { AppWidthService } from '@core/services/app-width.service';
 import { SvgIconComponent } from '@core/shared/svg-icon/svg-icon.component';
 import { SidebarModule } from 'primeng/sidebar';
@@ -12,21 +12,18 @@ import { tap } from 'rxjs';
   templateUrl: './contacts-drawer.component.html',
   styleUrl: './contacts-drawer.component.scss',
 })
-export class ContactsDrawerComponent implements OnInit {
-  private appService = inject(AppWidthService);
-  private destroyRef = inject(DestroyRef);
-
+export class ContactsDrawerComponent {
   public contactsDrawer!: boolean;
 
   public onClose(): void {
-    this.appService.setContactsDrawerVisible(false);
+    this.appService.setContactsDrawerVisibility(false);
   }
 
-  ngOnInit(): void {
-    this.appService.contactsDrawerVisible$
+  constructor(private appService: AppWidthService) {
+    toObservable(this.appService.contactsDrawerVisibility)
       .pipe(
         tap((val) => (this.contactsDrawer = val)),
-        takeUntilDestroyed(this.destroyRef),
+        takeUntilDestroyed(),
       )
       .subscribe();
   }

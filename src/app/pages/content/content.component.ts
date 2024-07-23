@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AppWidthService } from '@core/services/app-width.service';
+import { DESKTOP_BREAKPOINT } from '@core/shared/constants';
 import { PicturesComponent } from '@core/widgets/pictures/pictures.component';
 import { SidebarComponent } from '@core/widgets/sidebar/sidebar.component';
 
@@ -10,12 +11,9 @@ import { SidebarComponent } from '@core/widgets/sidebar/sidebar.component';
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss',
 })
-export class ContentComponent implements OnInit {
+export class ContentComponent {
   private appService = inject(AppWidthService);
 
-  public isDesktop = this.appService.isDesktopWidth;
-
-  ngOnInit(): void {
-    this.appService.calcWindowWidth();
-  }
+  public width = this.appService.width;
+  public DESKTOP_BREAKPOINT = DESKTOP_BREAKPOINT;
 }
