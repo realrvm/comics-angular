@@ -12,5 +12,12 @@ export const routes: Routes = [
         (c) => c.ContentComponent,
       ),
   },
+  {
+    path: 'content-mobile',
+    loadComponent: () =>
+      import('./pages/content-mobile/content-mobile.component').then(
+        (c) => c.ContentMobileComponent,
+      ),
+  },
   { path: '**', component: NotFoundComponent },
 ];

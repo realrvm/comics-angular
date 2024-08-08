@@ -22,6 +22,6 @@ export class SidebarComponent {
   }
 
   public goChapterOne() {
-    this.router.navigate(['']);
+    this.router.navigate(['content-mobile']);
   }
 }

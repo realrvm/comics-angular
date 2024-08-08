@@ -1,16 +1,16 @@
 import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { pictures } from './pictures';
+import { pictures } from '../pictures/pictures';
 
 @Component({
-  selector: 'azra-pictures',
+  selector: 'azra-pictures-mobile',
   standalone: true,
   imports: [AsyncPipe],
-  templateUrl: './pictures.component.html',
-  styleUrl: './pictures.component.scss',
+  templateUrl: './pictures-mobile.component.html',
+  styleUrl: './pictures-mobile.component.scss',
 })
-export class PicturesComponent {
+export class PicturesMobileComponent {
   private pictureSubject = new BehaviorSubject<string>('1');
   public pictureUrl$ = this.pictureSubject.asObservable();
 
