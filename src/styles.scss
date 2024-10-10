@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-body,
-html {
-  height: 100svh;
-}
+@import 'assets/theme.scss';
 
 .p-sidebar {
   background-color: #000;

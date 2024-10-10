@@ -1,19 +1,17 @@
-import { Component, inject } from '@angular/core';
-import { AppWidthService } from '@core/services/app-width.service';
-import { DESKTOP_BREAKPOINT } from '@core/shared/constants';
-import { PicturesComponent } from '@core/widgets/pictures/pictures.component';
-import { SidebarComponent } from '@core/widgets/sidebar/sidebar.component';
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+
+import { Responsive, ResponsiveDirective } from '@azra/core'
+import { SidebarComponent } from '@azra/ui/sidebar'
 
 @Component({
   selector: 'azra-content',
   standalone: true,
-  imports: [SidebarComponent, PicturesComponent],
+  imports: [ResponsiveDirective, SidebarComponent],
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContentComponent {
-  private appService = inject(AppWidthService);
-
-  public width = this.appService.width;
-  public DESKTOP_BREAKPOINT = DESKTOP_BREAKPOINT;
+  public readonly desktop = Responsive.DESKTOP
+  public readonly handset = Responsive.HANDSET
 }

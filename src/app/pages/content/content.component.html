@@ -1,13 +1,8 @@
-@let isDesktop = width() > DESKTOP_BREAKPOINT;
-@if (isDesktop) {
-  <div class="flex gap-4 h-full">
-    <azra-sidebar />
-    <div class="max-w-[1000px] w-full h-fit text-white">
-      <azra-pictures />
-    </div>
-  </div>
-} @else {
-  <div class="flex justify-center h-full ">
-    <azra-sidebar />
-  </div>
-}
+<div class="flex gap-4 h-full" *azraResponsive="desktop">
+  <azra-sidebar />
+  <div class="max-w-[1000px] w-full h-fit text-white">Azra Content</div>
+</div>
+
+<div class="flex justify-center h-full" *azraResponsive="handset">
+  <azra-sidebar />
+</div>
