@@ -1,13 +1,29 @@
-@let isDesktop = width() > DESKTOP_BREAKPOINT;
-@if (isDesktop) {
-  <div class="flex gap-4 h-full">
-    <azra-sidebar />
-    <div class="max-w-[1000px] w-full h-fit text-white">
-      <azra-pictures />
-    </div>
+<div
+  class="flex gap-4 h-full"
+  *azraResponsive="desktop"
+  (keydown)="handlePress($event)"
+  tabindex="-1"
+>
+  <azra-sidebar />
+  <div class="max-w-[1000px] w-full text-white relative">
+    <img
+      [ngSrc]="path()"
+      priority
+      fill
+      class="object-contain"
+      alt="azra_img"
+      (click)="handleOnImgClick()"
+    />
   </div>
-} @else {
-  <div class="flex justify-center h-full ">
-    <azra-sidebar />
+  <div class="text-white flex flex-col gap-3 font-yatra mt-10">
+    <p>Click on The Screen - Next Slide</p>
+    <p>ArrowLeft - Prev Slide</p>
+    <p>ArrowRight - Next Slide</p>
+    <p>ArrowUp - Prev Chapter</p>
+    <p>ArrowDown - Next Chapter</p>
   </div>
-}
+</div>
+
+<div class="flex justify-center h-full" *azraResponsive="handset">
+  <azra-sidebar />
+</div>

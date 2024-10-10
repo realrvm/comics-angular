@@ -1,19 +1,52 @@
-import { Component, inject } from '@angular/core';
-import { AppWidthService } from '@core/services/app-width.service';
-import { DESKTOP_BREAKPOINT } from '@core/shared/constants';
-import { PicturesComponent } from '@core/widgets/pictures/pictures.component';
-import { SidebarComponent } from '@core/widgets/sidebar/sidebar.component';
+import { NgOptimizedImage } from '@angular/common'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core'
+
+import { Responsive, ResponsiveDirective } from '@azra/core'
+import { SidebarComponent } from '@azra/ui/sidebar'
+
+import { ContentStore } from './content.store'
 
 @Component({
   selector: 'azra-content',
   standalone: true,
-  imports: [SidebarComponent, PicturesComponent],
+  imports: [ResponsiveDirective, SidebarComponent, NgOptimizedImage],
   templateUrl: './content.component.html',
-  styleUrl: './content.component.scss',
+  styles: `
+    :host {
+      @apply block h-screen bg-black p-4;
+    }
+  `,
+  host: {
+    '(document:keydown)': 'handlePress($event)',
+  },
+  providers: [ContentStore],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContentComponent {
-  private appService = inject(AppWidthService);
+  private readonly contentStore = inject(ContentStore)
 
-  public width = this.appService.width;
-  public DESKTOP_BREAKPOINT = DESKTOP_BREAKPOINT;
+  public readonly desktop = Responsive.DESKTOP
+  public readonly handset = Responsive.HANDSET
+
+  private readonly order = this.contentStore.order
+  public path = computed(() => `arc/${this.order()}.jpg`)
+
+  handleOnImgClick() {
+    this.contentStore.incrementOrder()
+  }
+
+  handlePress(event: KeyboardEvent) {
+    if (event.code === 'ArrowLeft' && this.order() > 1) {
+      this.contentStore.decrementOrder()
+    }
+
+    if (event.code === 'ArrowRight') {
+      this.contentStore.incrementOrder()
+    }
+  }
 }

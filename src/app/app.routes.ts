@@ -1,24 +1,51 @@
-import { Routes } from '@angular/router';
-import { widthGuard } from '@core/guards/width.quard';
-import { ContentComponent } from '@pages/content/content.component';
-import { MainComponent } from '@pages/main/main.component';
+import { Routes } from '@angular/router'
+
+import { PATHS } from '@azra/core'
+import { HomeComponent } from '@azra/pages'
 
 export const routes: Routes = [
-  { path: '', component: MainComponent },
   {
-    path: 'content',
-    loadComponent: () =>
-      import('./pages/content/content.component').then(
-        (c) => c.ContentComponent,
-      ),
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
   },
   {
-    path: 'content-mobile',
-    loadComponent: () =>
-      import('./pages/content-mobile/content-mobile.component').then(
-        (c) => c.ContentMobileComponent,
-      ),
-    canActivate: [widthGuard],
+    path: PATHS.home,
+    component: HomeComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@azra/ui/layout').then((m) => m.LayoutComponent),
+      },
+      {
+        path: '',
+        loadComponent: () =>
+          import('@azra/ui/layout').then((m) => m.HeaderComponent),
+        outlet: 'header',
+      },
+      {
+        path: '',
+        loadComponent: () =>
+          import('@azra/ui/drawers').then((m) => m.AboutDrawerComponent),
+        outlet: 'about-drawer',
+      },
+      {
+        path: '',
+        loadComponent: () =>
+          import('@azra/ui/drawers').then((m) => m.ContactsDrawerComponent),
+        outlet: 'contacts-drawer',
+      },
+    ],
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
-];
+  {
+    path: PATHS.content,
+    title: 'Azra Content',
+    loadComponent: () => import('@azra/pages').then((m) => m.ContentComponent),
+  },
+  {
+    path: '**',
+    title: 'Azra Not Found',
+    loadComponent: () => import('@azra/pages').then((m) => m.NotFoundComponent),
+  },
+]

@@ -1,0 +1,44 @@
+<div class="flex flex-col items-center h-full" *azraResponsive="desktop">
+  <h2
+    tabindex="0"
+    class="text-beige font-vinque text-[48px] uppercase text-center leading-[52px] cursor-pointer hover:text-light transition duration-200"
+    (keypress)="goHome()"
+    (click)="goHome()"
+  >
+    The Blood
+    <br />
+    of Azra
+  </h2>
+  <azra-sprite />
+
+  <h4 class="text-2xl font-vinque text-center text-light mt-2 mb-4 uppercase">
+    Chapters
+  </h4>
+</div>
+
+<div
+  class="flex flex-col items-center justify-between h-full w-full"
+  *azraResponsive="handset"
+>
+  <div class="flex flex-col items-center">
+    <h2 class="text-3xl font-vinque text-center text-beige mt-2 mb-4 uppercase">
+      Chapters
+    </h2>
+    <azra-sprite />
+    <span
+      class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
+      >Chapter One</span
+    >
+  </div>
+
+  <div class="flex flex-col items-center gap-4">
+    <azra-sprite />
+    <span
+      tabindex="0"
+      class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
+      (keypress)="goHome()"
+      (click)="goHome()"
+      >Back</span
+    >
+  </div>
+</div>

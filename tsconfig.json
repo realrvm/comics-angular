@@ -10,6 +10,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
@@ -18,18 +19,21 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "baseUrl": "./",
-    "paths": {
-      "@pages/*": ["src/app/pages/*"],
-      "@core/*": ["src/app/core/*"],
-      "@images/*": ["src/assets/images/*"],
-      "@svg/*": ["src/assets/svg/*"]
-    },
-    "useDefineForClassFields": false,
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@env/*": ["src/environments/*"],
+      "@azra/core": ["src/app/core/index.ts"],
+      "@azra/ui/layout": ["src/app/ui/layout/index.ts"],
+      "@azra/ui/utils": ["src/app/ui/utils/index.ts"],
+      "@azra/ui/drawers": ["src/app/ui/drawers/index.ts"],
+      "@azra/ui/sidebar": ["src/app/ui/sidebar/index.ts"],
+      "@azra/pages": ["src/app/pages/index.ts"],
+      "@azra/icons": ["src/app/ui/icons/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

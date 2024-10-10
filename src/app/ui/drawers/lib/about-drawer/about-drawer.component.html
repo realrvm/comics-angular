@@ -1,0 +1,35 @@
+@let data = aboutData();
+@let error = aboutError();
+<p-sidebar [(visible)]="aboutDrawer" position="right" (onHide)="onClose()">
+  <ng-template pTemplate="headless">
+    <div class="font-yatra flex flex-col items-center pb-10">
+      @if (data) {
+        <h3 class="text-beige text-3xl !font-vinque">{{ data.title }}</h3>
+        <azra-sprite />
+        <p class="text-light text-2xl text-center mb-6 leading-7">
+          {{ data.description }}
+        </p>
+        <p class="text-light text-2xl text-center mb-6">
+          {{ data.periodicity }}
+        </p>
+        <p class="text-light text-2xl text-center mb-6">
+          {{ data.warn }}
+        </p>
+        <p class="text-light text-2xl text-center mb-8">
+          {{ data.rating }}
+        </p>
+      }
+      <button
+        (click)="onClose()"
+        class="border border-beige rounded-lg py-3 px-6 md:hidden text-beige text-xl hover:text-light hover:border-light transition duration-300"
+      >
+        Back
+      </button>
+      @if (error) {
+        <h3 class="text-beige text-3xl !font-vinque">
+          Server Error. Reload Or Try Later.
+        </h3>
+      }
+    </div>
+  </ng-template>
+</p-sidebar>

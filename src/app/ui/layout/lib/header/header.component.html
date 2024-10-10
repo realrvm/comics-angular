@@ -1,0 +1,51 @@
+<div *azraResponsive="desktop">
+  <div class="flex items-center gap-8 pt-9 mx-auto max-w-[641px] text-beige">
+    <azra-sprite />
+    <h1 class="text-3xl md:text-5xl font-vinque text-center uppercase">
+      <span class="text-nowrap">The Blood</span>
+      <span> of Azra</span>
+    </h1>
+    <azra-sprite />
+  </div>
+  <ng-container *ngTemplateOutlet="azraMenu" />
+</div>
+
+<div
+  class="flex flex-col items-center text-beige z-20 px-4"
+  *azraResponsive="handset"
+>
+  <h1 class="text-3xl font-vinque text-center uppercase">The Blood of Azra</h1>
+  <azra-sprite />
+  <ng-container *ngTemplateOutlet="azraMenu" />
+  <azra-sprite />
+</div>
+
+<ng-template #azraMenu>
+  <div class="flex justify-center md:mt-7">
+    <ul
+      class="flex flex-col md:flex-row items-center uppercase text-light font-vinque text-2xl gap-5 md:gap-8"
+    >
+      <li azraTransition tabindex="0">
+        <a routerLink="/content">Read</a>
+      </li>
+      <li
+        azraTransition
+        tabindex="0"
+        (keypress)="setAboutDrawerVisible()"
+        (click)="setAboutDrawerVisible()"
+        [class.text-beige]="isAboutActive()"
+      >
+        About
+      </li>
+      <li
+        azraTransition
+        tabindex="0"
+        (keypress)="setContactsDrawerVisible()"
+        (click)="setContactsDrawerVisible()"
+        [class.text-beige]="isContactsActive()"
+      >
+        Contacts
+      </li>
+    </ul>
+  </div>
+</ng-template>

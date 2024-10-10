@@ -2,9 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body,
-html {
-  height: 100svh;
+@import 'assets/theme.scss';
+
+*:focus-visible {
+  outline: none;
 }
 
 .p-sidebar {
