@@ -21,13 +21,16 @@ export class ResponsiveDirective {
   private readonly responsiveService = inject(ResponsiveService)
   public azraResponsive = input<Responsive>()
 
-  private effect = effect(() => {
-    const width = this.responsiveService.width()
+  private effect = effect(
+    () => {
+      const width = this.responsiveService.width()
 
-    if (width === this.azraResponsive()) {
-      this.viewContainer.createEmbeddedView(this.templateRef)
-    } else {
-      this.viewContainer.clear()
-    }
-  })
+      if (width === this.azraResponsive()) {
+        this.viewContainer.createEmbeddedView(this.templateRef)
+      } else {
+        this.viewContainer.clear()
+      }
+    },
+    { allowSignalWrites: true },
+  )
 }

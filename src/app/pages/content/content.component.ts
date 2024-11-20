@@ -1,20 +1,21 @@
-import { NgOptimizedImage } from '@angular/common'
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  effect,
+  ElementRef,
   inject,
+  viewChild,
 } from '@angular/core'
 
 import { Responsive, ResponsiveDirective } from '@azra/core'
 import { SidebarComponent } from '@azra/ui/sidebar'
 
-import { ContentStore } from './content.store'
+import { ContentService } from './content.service'
 
 @Component({
   selector: 'azra-content',
   standalone: true,
-  imports: [ResponsiveDirective, SidebarComponent, NgOptimizedImage],
+  imports: [ResponsiveDirective, SidebarComponent],
   templateUrl: './content.component.html',
   styles: `
     :host {
@@ -24,29 +25,42 @@ import { ContentStore } from './content.store'
   host: {
     '(document:keydown)': 'handlePress($event)',
   },
-  providers: [ContentStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContentComponent {
-  private readonly contentStore = inject(ContentStore)
+  private readonly contentService = inject(ContentService)
 
   public readonly desktop = Responsive.DESKTOP
   public readonly handset = Responsive.HANDSET
 
-  private readonly order = this.contentStore.order
-  public path = computed(() => `arc/${this.order()}.jpg`)
+  public image = viewChild<ElementRef<HTMLImageElement>>('img')
+  private readonly res = this.contentService.getImage
+
+  private readonly effect = effect(
+    () => {
+      if (this.res()) {
+        const url = URL.createObjectURL(this.res() as Blob)
+        const image = this.image() as ElementRef<HTMLImageElement>
+        image.nativeElement.src = url
+      }
+    },
+    { allowSignalWrites: true },
+  )
 
   handleOnImgClick() {
-    this.contentStore.incrementOrder()
+    this.contentService.imgId.update((prev) => prev + 1)
   }
 
   handlePress(event: KeyboardEvent) {
-    if (event.code === 'ArrowLeft' && this.order() > 1) {
-      this.contentStore.decrementOrder()
+    if (event.code === 'ArrowLeft') {
+      this.contentService.imgId.update((prev) => {
+        if (prev === 1) return 1
+        return prev - 1
+      })
     }
 
     if (event.code === 'ArrowRight') {
-      this.contentStore.incrementOrder()
+      this.contentService.imgId.update((prev) => prev + 1)
     }
   }
 }

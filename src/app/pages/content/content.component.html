@@ -5,11 +5,9 @@
   tabindex="-1"
 >
   <azra-sidebar />
-  <div class="max-w-[1000px] w-full text-white relative">
+  <div class="max-w-[1000px] w-full text-white">
     <img
-      [ngSrc]="path()"
-      priority
-      fill
+      #img
       class="object-contain"
       alt="azra_img"
       (click)="handleOnImgClick()"
