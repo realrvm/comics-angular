@@ -3,6 +3,8 @@ import { inject, Injectable, signal } from '@angular/core'
 import { toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { catchError, EMPTY, from, mergeMap, of, switchMap, tap } from 'rxjs'
 
+import { ApiService } from '@azra/core'
+
 interface CacheImage {
   id: number
   blob: Blob
@@ -13,6 +15,7 @@ interface CacheImage {
 })
 export class ContentService {
   private readonly http = inject(HttpClient)
+  private readonly apiService = inject(ApiService)
 
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []

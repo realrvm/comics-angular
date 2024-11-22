@@ -2,6 +2,9 @@
 module.exports = {
   content: ['./src/**/*.{html,ts}'],
   theme: {
+    screens: {
+      md: '1070px',
+    },
     extend: {
       screens: {
         handset: { max: 'var(--handset)' },

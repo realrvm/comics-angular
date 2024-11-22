@@ -19,17 +19,17 @@
           {{ data.rating }}
         </p>
       }
+      @if (error) {
+        <h3 class="text-beige text-3xl !font-vinque text-center mb-10">
+          Server Error. Reload Or Try Later.
+        </h3>
+      }
       <button
         (click)="onClose()"
         class="border border-beige rounded-lg py-3 px-6 md:hidden text-beige text-xl hover:text-light hover:border-light transition duration-300"
       >
         Back
       </button>
-      @if (error) {
-        <h3 class="text-beige text-3xl !font-vinque">
-          Server Error. Reload Or Try Later.
-        </h3>
-      }
     </div>
   </ng-template>
 </p-sidebar>

@@ -1,11 +1,22 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'azra-not-found',
   standalone: true,
   imports: [],
   templateUrl: './not-found.component.html',
-  styleUrl: './not-found.component.scss',
+  styles: `
+    :host {
+      @apply block h-screen bg-black p-4;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotFoundComponent {}
+export class NotFoundComponent {
+  private readonly router = inject(Router)
+
+  public backHome(): void {
+    this.router.navigate(['/'])
+  }
+}

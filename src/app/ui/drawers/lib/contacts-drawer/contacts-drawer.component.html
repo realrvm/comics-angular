@@ -2,7 +2,7 @@
 @let error = contactsError();
 <p-sidebar [(visible)]="contactsDrawer" position="right" (onHide)="onClose()">
   <ng-template pTemplate="headless">
-    <div class="font-yatra flex flex-col items-center">
+    <div class="font-yatra flex flex-col items-center pb-10">
       @if (data) {
         <h3 class="text-beige text-3xl !font-vinque">Contacts</h3>
         <azra-sprite />
@@ -33,7 +33,7 @@
         </a>
       }
       @if (error) {
-        <h3 class="text-beige text-3xl !font-vinque">
+        <h3 class="text-beige text-3xl !font-vinque text-center">
           Server Error. Reload Or Try Later.
         </h3>
       }
