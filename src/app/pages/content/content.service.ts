@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http'
-import { inject, Injectable, signal } from '@angular/core'
+import { effect, inject, Injectable, signal } from '@angular/core'
 import { toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { catchError, EMPTY, from, mergeMap, of, switchMap, tap } from 'rxjs'
 
 import { ApiService } from '@azra/core'
+
+import { contentUrl } from './content.utils'
 
 interface CacheImage {
   id: number
@@ -16,9 +18,28 @@ interface CacheImage {
 export class ContentService {
   private readonly http = inject(HttpClient)
   private readonly apiService = inject(ApiService)
+  private readonly contentUrl = contentUrl
 
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []
+
+  //
+
+  private readonly imgUrl = signal<string>('')
+  // eslint-disable-next-line
+  private readonly content$ = this.http.get<any>(this.contentUrl)
+  private readonly content = toSignal(this.content$)
+  private readonly effect = effect(
+    () => {
+      const comicsArr =
+        this.content()?.data[0].arcs.arc[0].chapters[0].comics.find(
+          ({ title }: { title: string }) => title === '1',
+        )
+      console.log(comicsArr?.picture.formats.medium.url)
+    },
+    { allowSignalWrites: true },
+  )
+  //
 
   public imgId = signal(1)
 
