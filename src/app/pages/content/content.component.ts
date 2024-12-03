@@ -10,7 +10,6 @@ import {
 import { Responsive, ResponsiveDirective } from '@azra/core'
 import { SidebarComponent } from '@azra/ui/sidebar'
 
-import { AzraService } from './azra.service'
 import { ContentService } from './content.service'
 
 @Component({
@@ -30,18 +29,25 @@ import { ContentService } from './content.service'
 })
 export class ContentComponent {
   private readonly contentService = inject(ContentService)
-  private readonly azraService = inject(AzraService)
 
   public readonly desktop = Responsive.DESKTOP
   public readonly handset = Responsive.HANDSET
 
   public image = viewChild<ElementRef<HTMLImageElement>>('img')
-  private readonly res = this.azraService.getImage
+  private readonly blob = this.contentService.getImage
+  private readonly imagesLimit = this.contentService.dataLength
+  private content = this.contentService.content
 
   private readonly effect = effect(
     () => {
-      if (this.res()) {
-        const url = URL.createObjectURL(this.res() as Blob)
+      if (this.content() && !this.blob()) {
+        const url = URL.createObjectURL(this.content() as Blob)
+        const image = this.image() as ElementRef<HTMLImageElement>
+        image.nativeElement.src = url
+        this.contentService.imgId.set(1)
+      }
+      if (this.blob()) {
+        const url = URL.createObjectURL(this.blob() as Blob)
         const image = this.image() as ElementRef<HTMLImageElement>
         image.nativeElement.src = url
       }
@@ -56,16 +62,18 @@ export class ContentComponent {
 
   handlePress(event: KeyboardEvent) {
     if (event.code === 'ArrowLeft') {
-      this.azraService.imgId.update((prev) => {
+      this.contentService.imgId.update((prev) => {
         if (prev === undefined || prev === 1) return 1
         return prev - 1
       })
     }
 
     if (event.code === 'ArrowRight') {
-      this.azraService.imgId.update((prev) => {
+      const limit = this.imagesLimit()
+
+      this.contentService.imgId.update((prev) => {
         if (prev === undefined) return 1
-        return prev + 1
+        return prev + 1 < limit - 1 ? prev + 1 : limit - 1
       })
     }
   }

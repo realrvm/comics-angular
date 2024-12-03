@@ -1,55 +1,90 @@
 import { HttpClient } from '@angular/common/http'
-import { effect, inject, Injectable, signal } from '@angular/core'
+import { computed, inject, Injectable, signal } from '@angular/core'
 import { toObservable, toSignal } from '@angular/core/rxjs-interop'
-import { catchError, EMPTY, from, mergeMap, of, switchMap, tap } from 'rxjs'
+import {
+  catchError,
+  EMPTY,
+  filter,
+  from,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs'
 
 import { ApiService } from '@azra/core'
 
-import { AzraChapter, AzraData } from './content.interface'
+import { AzraChapter, AzraData, CacheImage } from './content.interface'
 import { contentUrl } from './content.utils'
 
-interface CacheImage {
-  id: number
-  blob: Blob
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class ContentService {
   private readonly http = inject(HttpClient)
   private readonly apiService = inject(ApiService)
   private readonly contentUrl = contentUrl
 
+  public data = signal<AzraChapter[]>([])
+  public dataLength = computed(() => this.data()[0].comics.length)
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []
 
-  //
+  private readonly content$ = this.http
+    // eslint-disable-next-line
+    .get<any>(this.contentUrl)
+    .pipe(
+      map((res) => {
+        const chapters = res.data[0].arcs.arc[0].chapters
 
-  private imgUrl = signal<AzraChapter[]>([])
-  // eslint-disable-next-line
-  private content$ = this.http.get<any>(this.contentUrl)
-  // private readonly contentBlob$ = this.http.get<any>(
-  //   'http://localhost:1337/uploads/small_3_a74da2d4c3.jpg',
-  //   { responseType: 'blob' as 'json' },
-  // )
-  private readonly content = toSignal(this.content$, {
-    initialValue: { data: [] },
+        return transformAzraResponse(chapters)
+      }),
+      tap((data) => this.data.set(data)),
+      switchMap((content) =>
+        from(this.getRangeArray()).pipe(
+          mergeMap((ids) =>
+            of(ids).pipe(
+              switchMap(() => {
+                const azra = content[0].comics.find((comic) => comic.id === ids)
+
+                const url = 'http://localhost:1337' + azra?.large
+
+                return this.http.get<Blob>(url, {
+                  responseType: 'blob' as 'json',
+                })
+              }),
+              tap((blob) => {
+                this._cachedImages.push({ id: ids, blob })
+                this._ids.update((prev) => [...new Set([...prev, ids])])
+              }),
+              map(() => {
+                const blob = this._cachedImages.find((img) => img.id === 1)
+                return blob?.blob
+              }),
+              filter(Boolean),
+            ),
+          ),
+        ),
+      ),
+    )
+
+  public readonly content = toSignal(this.content$)
+
+  public imgId = signal<number | undefined>(undefined)
+  private readonly imgIdCurrent = computed(() => {
+    if (this.imgId()) {
+      return this.imgId()! < this.dataLength() - 1
+        ? this.imgId()
+        : this.dataLength() - 1
+    }
+    return undefined
   })
-  //private readonly contentBlob = toSignal(this.contentBlob$)
-  private readonly effect = effect(
-    () => {
-      const azraChapters: AzraData[] =
-        this.content()?.data[0]?.arcs.arc[0].chapters
-      this.imgUrl.set(transformAzraResponse(azraChapters))
-    },
-    { allowSignalWrites: true },
-  )
-  //
 
-  public imgId = signal(1)
-
-  private getImage$ = toObservable(this.imgId).pipe(
+  private getImage$ = toObservable(this.imgIdCurrent).pipe(
+    filter(Boolean),
     tap((imgId) => {
-      this._ids.set(getRangeArray(imgId))
+      this._ids.set(this.getRangeArray(imgId))
 
       const filteredBlobs = this._cachedImages.filter(({ id }) =>
         this._ids().includes(id),
@@ -59,39 +94,23 @@ export class ContentService {
     switchMap((id) => {
       const index = this._cachedImages.findIndex((img) => img.id === id)
 
-      if (index > -1) {
-        return from(getRangeArray(id)).pipe(
-          mergeMap((ids) => {
-            const currentIndex = this._cachedImages.findIndex(
-              (img) => img.id === ids,
-            )
-
-            if (currentIndex === -1) {
-              //const url = `https://picsum.photos/id/${ids}/200/300`
-              const url = 'http://localhost:1337'
-              this.http
-                .get(url, { responseType: 'blob' })
-                .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
-                .subscribe()
-            }
-
-            const image = this._cachedImages[index]
-            return of(image.blob)
-          }),
-        )
-      }
-
-      return from(getRangeArray(id)).pipe(
+      return from(this.getRangeArray(id)).pipe(
         mergeMap((ids) => {
-          //const url = `https://picsum.photos/id/${ids}/200/300`
-          const large = this.imgUrl()[0].comics.find(
-            (comic) => comic.id === ids,
+          const currentIndex = this._cachedImages.findIndex(
+            (img) => img.id === ids,
           )
-          const url = `http://localhost:1337` + large?.large
 
-          return this.http
-            .get(url, { responseType: 'blob' })
-            .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
+          if (currentIndex === -1) {
+            const azra = this.data()[0].comics.find((comic) => comic.id === ids)
+            const url = 'http://localhost:1337' + azra?.large
+            this.http
+              .get(url, { responseType: 'blob' })
+              .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
+              .subscribe()
+          }
+
+          const image = this._cachedImages[index]
+          return of(image.blob)
         }),
       )
     }),
@@ -107,11 +126,15 @@ export class ContentService {
       this._cachedImages.push({ id, blob })
     }
   }
-}
 
-function getRangeArray(id: number): number[] {
-  if (id > 1) return [id - 1, id, id + 1, id + 2]
-  return [3, 2, 1]
+  private getRangeArray(id = 1): number[] {
+    const diff = this.dataLength()
+
+    if (id > 1)
+      return [id - 1, id, id + 1, id + 2].filter((num) => num <= diff - 1)
+
+    return [3, 2, 1].filter((num) => num <= diff - 1)
+  }
 }
 
 function getOriginals(array: CacheImage[]): CacheImage[] {
