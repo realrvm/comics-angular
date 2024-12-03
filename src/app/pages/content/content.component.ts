@@ -10,6 +10,7 @@ import {
 import { Responsive, ResponsiveDirective } from '@azra/core'
 import { SidebarComponent } from '@azra/ui/sidebar'
 
+import { AzraService } from './azra.service'
 import { ContentService } from './content.service'
 
 @Component({
@@ -29,12 +30,13 @@ import { ContentService } from './content.service'
 })
 export class ContentComponent {
   private readonly contentService = inject(ContentService)
+  private readonly azraService = inject(AzraService)
 
   public readonly desktop = Responsive.DESKTOP
   public readonly handset = Responsive.HANDSET
 
   public image = viewChild<ElementRef<HTMLImageElement>>('img')
-  private readonly res = this.contentService.getImage
+  private readonly res = this.azraService.getImage
 
   private readonly effect = effect(
     () => {
@@ -48,19 +50,23 @@ export class ContentComponent {
   )
 
   handleOnImgClick() {
-    this.contentService.imgId.update((prev) => prev + 1)
+    //this.contentService.imgId.update((prev) => prev + 1)
+    console.log('1')
   }
 
   handlePress(event: KeyboardEvent) {
     if (event.code === 'ArrowLeft') {
-      this.contentService.imgId.update((prev) => {
-        if (prev === 1) return 1
+      this.azraService.imgId.update((prev) => {
+        if (prev === undefined || prev === 1) return 1
         return prev - 1
       })
     }
 
     if (event.code === 'ArrowRight') {
-      this.contentService.imgId.update((prev) => prev + 1)
+      this.azraService.imgId.update((prev) => {
+        if (prev === undefined) return 1
+        return prev + 1
+      })
     }
   }
 }
