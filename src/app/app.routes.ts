@@ -40,7 +40,7 @@ export const routes: Routes = [
   },
   {
     path: PATHS.content,
-    title: 'Azra Content',
+    title: 'TBOA',
     loadComponent: () => import('@azra/pages').then((m) => m.ContentComponent),
   },
   {

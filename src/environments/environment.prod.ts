@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api_url: 'http://localhost:1337/api',
+  api_url: 'https://blood-of-azra.site/api',
 }

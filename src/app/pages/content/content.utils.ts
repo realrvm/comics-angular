@@ -29,4 +29,4 @@ const query = qs.stringify(
   },
 )
 
-export const contentUrl = `http://localhost:1337/api/contents?${query}`
+export const contentUrl = `https://blood-of-azra.site/api/contents?${query}`

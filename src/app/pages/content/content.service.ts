@@ -48,7 +48,7 @@ export class ContentService {
               switchMap(() => {
                 const azra = content[0].comics.find((comic) => comic.id === ids)
 
-                const url = 'http://localhost:1337' + azra?.large
+                const url = 'https://blood-of-azra.site' + azra?.large
 
                 return this.http.get<Blob>(url, {
                   responseType: 'blob' as 'json',
@@ -102,7 +102,7 @@ export class ContentService {
 
           if (currentIndex === -1) {
             const azra = this.data()[0].comics.find((comic) => comic.id === ids)
-            const url = 'http://localhost:1337' + azra?.large
+            const url = 'https://blood-of-azra.site' + azra?.large
             this.http
               .get(url, { responseType: 'blob' })
               .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
