@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http'
-import { computed, inject, Injectable, signal } from '@angular/core'
-import { toObservable, toSignal } from '@angular/core/rxjs-interop'
+import { inject, Injectable, signal } from '@angular/core'
 import {
+  BehaviorSubject,
   catchError,
+  combineLatest,
   EMPTY,
   filter,
   from,
@@ -26,10 +27,20 @@ export class ContentService {
   private readonly apiService = inject(ApiService)
   private readonly contentUrl = contentUrl
 
-  public data = signal<AzraChapter[]>([])
-  public dataLength = computed(() => this.data()[0].comics.length)
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []
+
+  private checkAndCacheImage(id: number, blob: Blob) {
+    if (this._ids().indexOf(id) > -1) {
+      this._cachedImages.push({ id, blob })
+    }
+  }
+
+  private getRangeArray(id = 1): number[] {
+    if (id > 1) return [id - 1, id, id + 1, id + 2]
+
+    return [3, 2, 1]
+  }
 
   private readonly content$ = this.http
     // eslint-disable-next-line
@@ -40,50 +51,15 @@ export class ContentService {
 
         return transformAzraResponse(chapters)
       }),
-      tap((data) => this.data.set(data)),
-      switchMap((content) =>
-        from(this.getRangeArray()).pipe(
-          mergeMap((ids) =>
-            of(ids).pipe(
-              switchMap(() => {
-                const azra = content[0].comics.find((comic) => comic.id === ids)
-
-                const url = 'https://blood-of-azra.site' + azra?.large
-
-                return this.http.get<Blob>(url, {
-                  responseType: 'blob' as 'json',
-                })
-              }),
-              tap((blob) => {
-                this._cachedImages.push({ id: ids, blob })
-                this._ids.update((prev) => [...new Set([...prev, ids])])
-              }),
-              map(() => {
-                const blob = this._cachedImages.find((img) => img.id === 1)
-                return blob?.blob
-              }),
-              filter(Boolean),
-            ),
-          ),
-        ),
-      ),
     )
 
-  public readonly content = toSignal(this.content$)
+  public subject = new BehaviorSubject(1)
+  public readonly subject$ = this.subject.asObservable()
 
-  public imgId = signal<number | undefined>(undefined)
-  private readonly imgIdCurrent = computed(() => {
-    if (this.imgId()) {
-      return this.imgId()! < this.dataLength() - 1
-        ? this.imgId()
-        : this.dataLength() - 1
-    }
-    return undefined
-  })
-
-  private getImage$ = toObservable(this.imgIdCurrent).pipe(
-    filter(Boolean),
-    tap((imgId) => {
+  public data$ = combineLatest(this.content$, this.subject$).pipe(
+    tap((responses) => {
+      // eslint-disable-next-line
+      const [_, imgId] = responses
       this._ids.set(this.getRangeArray(imgId))
 
       const filteredBlobs = this._cachedImages.filter(({ id }) =>
@@ -91,50 +67,64 @@ export class ContentService {
       )
       this._cachedImages = getOriginals(filteredBlobs)
     }),
-    switchMap((id) => {
+  )
+
+  public blob$ = this.data$.pipe(
+    switchMap((responses) => {
+      const [content, id] = responses
       const index = this._cachedImages.findIndex((img) => img.id === id)
 
+      if (index > -1) {
+        return from(this.getRangeArray(id)).pipe(
+          mergeMap((ids) => {
+            const currentIndex = this._cachedImages.findIndex(
+              (img) => img.id === ids,
+            )
+
+            if (currentIndex === -1) {
+              const azra = content[0].comics.find((comic) => comic.id === ids)
+              const url = 'https://blood-of-azra.site' + azra?.large
+              this.http
+                .get(url, { responseType: 'blob' })
+                .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
+                .subscribe()
+            }
+
+            const image = this._cachedImages[index]
+            return of(image.blob)
+          }),
+        )
+      }
+
       return from(this.getRangeArray(id)).pipe(
-        mergeMap((ids) => {
-          const currentIndex = this._cachedImages.findIndex(
-            (img) => img.id === ids,
-          )
+        mergeMap((ids) =>
+          of(ids).pipe(
+            switchMap(() => {
+              const azra = content[0].comics.find((comic) => comic.id === ids)
 
-          if (currentIndex === -1) {
-            const azra = this.data()[0].comics.find((comic) => comic.id === ids)
-            const url = 'https://blood-of-azra.site' + azra?.large
-            this.http
-              .get(url, { responseType: 'blob' })
-              .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
-              .subscribe()
-          }
+              const url = 'https://blood-of-azra.site' + azra?.large
 
-          const image = this._cachedImages[index]
-          return of(image.blob)
-        }),
+              return this.http.get<Blob>(url, {
+                responseType: 'blob' as 'json',
+              })
+            }),
+            tap((blob) => {
+              this._cachedImages.push({ id: ids, blob })
+              this._ids.update((prev) => [...new Set([...prev, ids])])
+            }),
+            map(() => {
+              const blob = this._cachedImages.find((img) => img.id === id)
+              return blob?.blob
+            }),
+            filter(Boolean),
+          ),
+        ),
       )
     }),
     catchError(() => {
       return EMPTY
     }),
   )
-
-  public readonly getImage = toSignal(this.getImage$)
-
-  private checkAndCacheImage(id: number, blob: Blob) {
-    if (this._ids().indexOf(id) > -1) {
-      this._cachedImages.push({ id, blob })
-    }
-  }
-
-  private getRangeArray(id = 1): number[] {
-    const diff = this.dataLength()
-
-    if (id > 1)
-      return [id - 1, id, id + 1, id + 2].filter((num) => num <= diff - 1)
-
-    return [3, 2, 1].filter((num) => num <= diff - 1)
-  }
 }
 
 function getOriginals(array: CacheImage[]): CacheImage[] {

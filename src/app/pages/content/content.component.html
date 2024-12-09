@@ -5,12 +5,16 @@
   tabindex="-1"
 >
   <azra-sidebar />
-  <div class="max-w-[1000px] w-full text-white">
+  <div class="max-w-[1000px] w-full">
+    @if (hasNoImage()) {
+      <p class="text-beige text-2xl font-vinque">Loading...</p>
+    }
     <img
       #img
-      class="object-contain w-full h-full"
-      alt="azra_img"
-      (click)="handleOnImgClick()"
+      class="object-contain w-full"
+      [ngClass]="hasNoImage() ? 'h-0': 'h-full'"
+      [alt]="hasNoImage() ? '' : 'azra_image'"
+      (click)="handleOnImgClick($event)"
       (keydown)="handlePress($event)"
       tabindex="-1"
     />
