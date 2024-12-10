@@ -1,7 +1,6 @@
 <div
   class="flex gap-4 h-full"
   *azraResponsive="desktop"
-  (keydown)="handlePress($event)"
   tabindex="-1"
 >
   <azra-sidebar />
@@ -15,7 +14,6 @@
       [ngClass]="hasNoImage() ? 'h-0': 'h-full'"
       [alt]="hasNoImage() ? '' : 'azra_image'"
       (click)="handleOnImgClick($event)"
-      (keydown)="handlePress($event)"
       tabindex="-1"
     />
   </div>

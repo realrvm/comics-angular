@@ -14,7 +14,7 @@ import {
   tap,
 } from 'rxjs'
 
-import { ApiService } from '@azra/core'
+import { ApiService, LocalStorageService } from '@azra/core'
 
 import { AzraChapter, AzraData, CacheImage } from './content.interface'
 import { contentUrl } from './content.utils'
@@ -25,22 +25,14 @@ import { contentUrl } from './content.utils'
 export class ContentService {
   private readonly http = inject(HttpClient)
   private readonly apiService = inject(ApiService)
+  private readonly localStorageService = inject(LocalStorageService)
+  private readonly localStorageValue = this.localStorageService.get(
+    'azraLastImageNumber',
+  ) as string
   private readonly contentUrl = contentUrl
 
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []
-
-  private checkAndCacheImage(id: number, blob: Blob) {
-    if (this._ids().indexOf(id) > -1) {
-      this._cachedImages.push({ id, blob })
-    }
-  }
-
-  private getRangeArray(id = 1): number[] {
-    if (id > 1) return [id - 1, id, id + 1, id + 2]
-
-    return [3, 2, 1]
-  }
 
   private readonly content$ = this.http
     // eslint-disable-next-line
@@ -53,10 +45,10 @@ export class ContentService {
       }),
     )
 
-  public subject = new BehaviorSubject(1)
+  public subject = new BehaviorSubject(Number(this.localStorageValue) || 1)
   public readonly subject$ = this.subject.asObservable()
 
-  public data$ = combineLatest(this.content$, this.subject$).pipe(
+  public readonly data$ = combineLatest(this.content$, this.subject$).pipe(
     tap((responses) => {
       // eslint-disable-next-line
       const [_, imgId] = responses
@@ -69,7 +61,7 @@ export class ContentService {
     }),
   )
 
-  public blob$ = this.data$.pipe(
+  public readonly blob$ = this.data$.pipe(
     switchMap((responses) => {
       const [content, id] = responses
       const index = this._cachedImages.findIndex((img) => img.id === id)
@@ -91,6 +83,7 @@ export class ContentService {
             }
 
             const image = this._cachedImages[index]
+            this.localStorageService.set('azraLastImageNumber', image.id)
             return of(image.blob)
           }),
         )
@@ -125,6 +118,18 @@ export class ContentService {
       return EMPTY
     }),
   )
+
+  private checkAndCacheImage(id: number, blob: Blob) {
+    if (this._ids().indexOf(id) > -1) {
+      this._cachedImages.push({ id, blob })
+    }
+  }
+
+  private getRangeArray(id = 1): number[] {
+    if (id > 1) return [id - 1, id, id + 1, id + 2]
+
+    return [3, 2, 1]
+  }
 }
 
 function getOriginals(array: CacheImage[]): CacheImage[] {

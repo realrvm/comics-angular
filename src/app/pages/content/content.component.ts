@@ -27,7 +27,7 @@ import { ContentService } from './content.service'
     }
   `,
   host: {
-    '(document:keydown)': 'handlePress($event)',
+    '(document:keyup)': 'handleOnPress($event)',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -59,31 +59,29 @@ export class ContentComponent implements OnInit {
 
   handleOnImgClick(event: MouseEvent) {
     event.stopPropagation()
-
-    const value = this.getCorrectValue()
+    const value = this.subject.getValue()
 
     this.subject.next(value + 1)
   }
 
-  handlePress(event: KeyboardEvent) {
+  handleOnPress(event: KeyboardEvent) {
     event.stopPropagation()
 
-    const value = this.getCorrectValue()
-
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+    const value = this.subject.getValue()
 
     if (event.code === 'ArrowLeft') {
-      this.subject.next(value - 1)
+      this.subject.next(this.getCorrectValue(value))
     }
 
     if (event.code === 'ArrowRight') {
-      this.contentService.subject.next(value + 1)
+      this.subject.next(value + 1)
     }
   }
 
-  private getCorrectValue() {
-    const value = this.subject.getValue()
+  private getCorrectValue(value = 1): number {
+    if (value <= 1) return 1
 
-    return value < 2 ? 1 : value
+    return value - 1
   }
 }
