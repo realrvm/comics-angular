@@ -14,6 +14,11 @@ import {
   tap,
 } from 'rxjs'
 
+interface ContentData {
+  title: string
+  amounts: number
+}
+
 import { ApiService, LocalStorageService } from '@azra/core'
 
 import { AzraChapter, AzraData, CacheImage } from './content.interface'
@@ -30,6 +35,7 @@ export class ContentService {
     'azraLastImageNumber',
   ) as string
   private readonly contentUrl = contentUrl
+  public readonly contentData = signal<ContentData[]>([])
 
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []
@@ -40,8 +46,10 @@ export class ContentService {
     .pipe(
       map((res) => {
         const chapters = res.data[0].arcs.arc[0].chapters
+        const content = transformAzraResponse(chapters)
+        this.contentData.update((prev) => [...prev, ...getContentData(content)])
 
-        return transformAzraResponse(chapters)
+        return content
       }),
     )
 
@@ -65,6 +73,7 @@ export class ContentService {
     switchMap((responses) => {
       const [content, id] = responses
       const index = this._cachedImages.findIndex((img) => img.id === id)
+      console.log(content)
 
       if (index > -1) {
         return from(this.getRangeArray(id)).pipe(
@@ -75,6 +84,8 @@ export class ContentService {
 
             if (currentIndex === -1) {
               const azra = content[0].comics.find((comic) => comic.id === ids)
+              if (azra === undefined) throw new Error('Not found')
+
               const url = 'https://blood-of-azra.site' + azra?.large
               this.http
                 .get(url, { responseType: 'blob' })
@@ -94,6 +105,7 @@ export class ContentService {
           of(ids).pipe(
             switchMap(() => {
               const azra = content[0].comics.find((comic) => comic.id === ids)
+              if (azra === undefined) throw new Error('Not found')
 
               const url = 'https://blood-of-azra.site' + azra?.large
 
@@ -115,6 +127,7 @@ export class ContentService {
       )
     }),
     catchError(() => {
+      this.localStorageService.set('azraLastImageNumber', 1)
       return EMPTY
     }),
   )
@@ -142,6 +155,19 @@ function getOriginals(array: CacheImage[]): CacheImage[] {
       res.push(item)
     }
   }
+  return res
+}
+
+function getContentData(content: AzraChapter[]): ContentData[] {
+  const res: ContentData[] = []
+
+  for (const item of content) {
+    const title = item?.id || ''
+    const comicsAmount = item.comics?.length
+
+    res.push({ title, amounts: comicsAmount })
+  }
+
   return res
 }
 

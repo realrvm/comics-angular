@@ -57,14 +57,14 @@ export class ContentComponent implements OnInit {
     })
   }
 
-  handleOnImgClick(event: MouseEvent) {
+  public handleOnImgClick(event: MouseEvent) {
     event.stopPropagation()
     const value = this.subject.getValue()
 
     this.subject.next(value + 1)
   }
 
-  handleOnPress(event: KeyboardEvent) {
+  public handleOnPress(event: KeyboardEvent) {
     event.stopPropagation()
 
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
