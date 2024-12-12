@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
 import { inject, Injectable, signal } from '@angular/core'
 import {
   BehaviorSubject,
@@ -14,14 +14,15 @@ import {
   tap,
 } from 'rxjs'
 
-interface ContentData {
-  title: string
-  amounts: number
-}
-
 import { ApiService, LocalStorageService } from '@azra/core'
 
-import { AzraChapter, AzraData, CacheImage } from './content.interface'
+import {
+  AzraChapter,
+  AzraData,
+  CacheImage,
+  ContentData,
+  ContentTitleAndId,
+} from './content.interface'
 import { contentUrl } from './content.utils'
 
 @Injectable({
@@ -35,31 +36,38 @@ export class ContentService {
     'azraLastImageNumber',
   ) as string
   private readonly contentUrl = contentUrl
+  private readonly contentTitleAndId = signal<ContentTitleAndId[]>([])
   public readonly contentData = signal<ContentData[]>([])
 
   private _ids = signal<number[]>([])
   private _cachedImages: CacheImage[] = []
 
-  private readonly content$ = this.http
+  private readonly comicsSource$ = this.apiService
     // eslint-disable-next-line
     .get<any>(this.contentUrl)
     .pipe(
+      filter((data) => Boolean(data)),
       map((res) => {
         const chapters = res.data[0].arcs.arc[0].chapters
         const content = transformAzraResponse(chapters)
-        this.contentData.update((prev) => [...prev, ...getContentData(content)])
+        this.contentData.set(getContentData(content))
+        this.contentTitleAndId.set(getContentTitleAndId(content))
 
-        return content
+        const commonContent = content.map((item) => item.comics).flat()
+        return commonContent
       }),
+      catchError(() => EMPTY),
     )
 
   public subject = new BehaviorSubject(Number(this.localStorageValue) || 1)
   public readonly subject$ = this.subject.asObservable()
 
-  public readonly data$ = combineLatest(this.content$, this.subject$).pipe(
+  public readonly comicsFilteredSource$ = combineLatest(
+    this.comicsSource$,
+    this.subject$,
+  ).pipe(
     tap((responses) => {
-      // eslint-disable-next-line
-      const [_, imgId] = responses
+      const [, imgId] = responses
       this._ids.set(this.getRangeArray(imgId))
 
       const filteredBlobs = this._cachedImages.filter(({ id }) =>
@@ -69,11 +77,10 @@ export class ContentService {
     }),
   )
 
-  public readonly blob$ = this.data$.pipe(
+  public readonly comicBlob$ = this.comicsFilteredSource$.pipe(
     switchMap((responses) => {
       const [content, id] = responses
       const index = this._cachedImages.findIndex((img) => img.id === id)
-      console.log(content)
 
       if (index > -1) {
         return from(this.getRangeArray(id)).pipe(
@@ -83,7 +90,7 @@ export class ContentService {
             )
 
             if (currentIndex === -1) {
-              const azra = content[0].comics.find((comic) => comic.id === ids)
+              const azra = content.find((comic) => comic.id === ids)
               if (azra === undefined) throw new Error('Not found')
 
               const url = 'https://blood-of-azra.site' + azra?.large
@@ -104,7 +111,7 @@ export class ContentService {
         mergeMap((ids) =>
           of(ids).pipe(
             switchMap(() => {
-              const azra = content[0].comics.find((comic) => comic.id === ids)
+              const azra = content.find((comic) => comic.id === ids)
               if (azra === undefined) throw new Error('Not found')
 
               const url = 'https://blood-of-azra.site' + azra?.large
@@ -126,11 +133,20 @@ export class ContentService {
         ),
       )
     }),
-    catchError(() => {
+    catchError((e: HttpErrorResponse) => {
       this.localStorageService.set('azraLastImageNumber', 1)
+      console.log(e)
       return EMPTY
     }),
   )
+
+  public findComicByChapterClick(title: string) {
+    const contentAzra = this.contentTitleAndId().find(
+      (item) => item.title === title,
+    )
+
+    if (contentAzra) this.subject.next(contentAzra.imgId)
+  }
 
   private checkAndCacheImage(id: number, blob: Blob) {
     if (this._ids().indexOf(id) > -1) {
@@ -165,7 +181,20 @@ function getContentData(content: AzraChapter[]): ContentData[] {
     const title = item?.id || ''
     const comicsAmount = item.comics?.length
 
-    res.push({ title, amounts: comicsAmount })
+    res.push({ title, amounts: comicsAmount, active: false })
+  }
+
+  return res
+}
+
+function getContentTitleAndId(content: AzraChapter[]): ContentTitleAndId[] {
+  const res: ContentTitleAndId[] = []
+
+  for (const item of content) {
+    const title = item.id
+    const imgId = item.comics[0].id
+
+    res.push({ title, imgId })
   }
 
   return res

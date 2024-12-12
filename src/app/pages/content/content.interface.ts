@@ -26,3 +26,14 @@ export interface CacheImage {
   id: number
   blob: Blob
 }
+
+export interface ContentData {
+  title: string
+  amounts: number
+  active?: boolean
+}
+
+export interface ContentTitleAndId {
+  title: string
+  imgId: number
+}

@@ -34,7 +34,7 @@ import { ContentService } from './content.service'
 export class ContentComponent implements OnInit {
   private readonly contentService = inject(ContentService)
   private readonly subject = this.contentService.subject
-  private readonly blob$ = this.contentService.blob$
+  private readonly blob$ = this.contentService.comicBlob$
   private readonly destroyRef = inject(DestroyRef)
 
   public readonly desktop = Responsive.DESKTOP

@@ -13,6 +13,13 @@ import { ContactsDrawerService } from './contacts-drawer.service'
   standalone: true,
   imports: [SidebarModule, SpriteComponent],
   templateUrl: './contacts-drawer.component.html',
+  styles: `
+    :host {
+      ::ng-deep .p-sidebar-right.p-sidebar {
+        @apply overflow-y-auto;
+      }
+    }
+  `,
 })
 export class ContactsDrawerComponent {
   public contactsDrawer!: boolean

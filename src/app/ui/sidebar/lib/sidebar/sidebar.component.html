@@ -13,9 +13,14 @@
 
   @let chaps = chapters();
   @for (chapter of chaps; track $index) {
-    <h4 class="text-2xl font-vinque text-center text-light mt-2 mb-4 uppercase">
-      {{ chapter.title }} ({{ chapter.amounts }})
-    </h4>
+    <button (click)="onChapterClick(chapter.title)">
+      <h4
+        class="text-2xl font-vinque text-center mt-2 mb-4 uppercase"
+        [ngClass]="chapter.active ? 'text-beige' : 'text-light'"
+      >
+        {{ chapter.title }} ({{ chapter.amounts }})
+      </h4>
+    </button>
   }
 </div>
 
