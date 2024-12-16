@@ -93,7 +93,7 @@ export class ContentService {
               const azra = content.find((comic) => comic.id === ids)
               if (azra === undefined) throw new Error('Not found')
 
-              const url = 'https://blood-of-azra.site' + azra?.large
+              const url = 'https://blood-of-azra.site' + azra?.url
               this.http
                 .get(url, { responseType: 'blob' })
                 .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
@@ -114,7 +114,7 @@ export class ContentService {
               const azra = content.find((comic) => comic.id === ids)
               if (azra === undefined) throw new Error('Not found')
 
-              const url = 'https://blood-of-azra.site' + azra?.large
+              const url = 'https://blood-of-azra.site' + azra?.url
 
               return this.http.get<Blob>(url, {
                 responseType: 'blob' as 'json',
@@ -205,8 +205,7 @@ function transformAzraResponse(azra: AzraData[] = []): AzraChapter[] {
     id: title,
     comics: comics.map(({ title: comicTitle, picture }) => ({
       id: Number(comicTitle),
-      small: picture?.formats.small.url,
-      large: picture?.formats.large.url,
+      url: picture?.url,
     })),
   }))
 }

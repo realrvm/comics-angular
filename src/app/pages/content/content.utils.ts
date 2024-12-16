@@ -12,7 +12,7 @@ const query = qs.stringify(
                   comics: {
                     populate: {
                       picture: {
-                        fields: ['formats'],
+                        fields: ['url'],
                       },
                     },
                   },

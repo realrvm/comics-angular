@@ -1,7 +1,6 @@
 export interface AzraImage {
   id: number
-  small: string
-  large: string
+  url: string
 }
 
 export interface AzraChapter {
@@ -14,10 +13,7 @@ export interface AzraData {
   comics: {
     title: string
     picture: {
-      formats: {
-        small: { url: string }
-        large: { url: string }
-      }
+      url: string
     }
   }[]
 }
