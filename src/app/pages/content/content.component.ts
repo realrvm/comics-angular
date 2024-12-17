@@ -11,7 +11,7 @@ import {
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
-import { Responsive, ResponsiveDirective } from '@azra/core'
+import { DebounceDirective, Responsive, ResponsiveDirective } from '@azra/core'
 import { SidebarComponent } from '@azra/ui/sidebar'
 
 import { ContentService } from './content.service'
@@ -19,7 +19,7 @@ import { ContentService } from './content.service'
 @Component({
   selector: 'azra-content',
   standalone: true,
-  imports: [ResponsiveDirective, SidebarComponent, NgClass],
+  imports: [ResponsiveDirective, DebounceDirective, SidebarComponent, NgClass],
   templateUrl: './content.component.html',
   styles: `
     :host {
@@ -57,14 +57,13 @@ export class ContentComponent implements OnInit {
     })
   }
 
-  public handleOnImgClick(event: MouseEvent):void {
-    event.stopPropagation()
+  public handleOnImgClick(): void {
     const value = this.subject.getValue()
 
     this.subject.next(value + 1)
   }
 
-  public handleOnPress(event: KeyboardEvent):void {
+  public handleOnPress(event: KeyboardEvent): void {
     event.stopPropagation()
 
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return

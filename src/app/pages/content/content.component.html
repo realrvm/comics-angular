@@ -13,7 +13,9 @@
       class="object-contain w-full"
       [ngClass]="hasNoImage() ? 'h-0': 'h-full'"
       [alt]="hasNoImage() ? '' : 'azra_image'"
-      (click)="handleOnImgClick($event)"
+      (debounceClick)="handleOnImgClick()"
+      azraDebounce
+      [debounceTime]=500
       tabindex="-1"
     />
   </div>
