@@ -90,8 +90,8 @@ export class ContentService {
             )
 
             if (currentIndex === -1) {
-              const azra = content.find((comic) => comic.id === ids)
-              if (azra === undefined) throw new Error('Not found')
+              let azra = content.find((comic) => comic.id === ids)
+              if (azra === undefined) azra = content.find(comic => comic.id === 1)
 
               const url = 'https://blood-of-azra.site' + azra?.url
               this.http
@@ -111,8 +111,8 @@ export class ContentService {
         mergeMap((ids) =>
           of(ids).pipe(
             switchMap(() => {
-              const azra = content.find((comic) => comic.id === ids)
-              if (azra === undefined) throw new Error('Not found')
+              let azra = content.find((comic) => comic.id === ids)
+              if (azra === undefined) azra = content.find(comic => comic.id === 1)
 
               const url = 'https://blood-of-azra.site' + azra?.url
 
