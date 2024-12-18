@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { inject, Injectable, signal } from '@angular/core'
 import {
   BehaviorSubject,
@@ -90,14 +90,15 @@ export class ContentService {
             )
 
             if (currentIndex === -1) {
-              let azra = content.find((comic) => comic.id === ids)
-              if (azra === undefined) azra = content.find(comic => comic.id === 1)
+              const azra = content.find((comic) => comic.id === ids)
 
-              const url = 'https://blood-of-azra.site' + azra?.url
-              this.http
-                .get(url, { responseType: 'blob' })
-                .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
-                .subscribe()
+              if (azra) {
+                const url = 'https://blood-of-azra.site' + azra?.url
+                this.http
+                  .get(url, { responseType: 'blob' })
+                  .pipe(tap((blob) => this.checkAndCacheImage(ids, blob)))
+                  .subscribe()
+              }
             }
 
             const image = this._cachedImages[index]
@@ -111,11 +112,8 @@ export class ContentService {
         mergeMap((ids) =>
           of(ids).pipe(
             switchMap(() => {
-              let azra = content.find((comic) => comic.id === ids)
-              if (azra === undefined) azra = content.find(comic => comic.id === 1)
-
+              const azra = content.find((comic) => comic.id === ids)
               const url = 'https://blood-of-azra.site' + azra?.url
-
               return this.http.get<Blob>(url, {
                 responseType: 'blob' as 'json',
               })
@@ -133,9 +131,8 @@ export class ContentService {
         ),
       )
     }),
-    catchError((e: HttpErrorResponse) => {
+    catchError(() => {
       this.localStorageService.set('azraLastImageNumber', 1)
-      console.log(e)
       return EMPTY
     }),
   )

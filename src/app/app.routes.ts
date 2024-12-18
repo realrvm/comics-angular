@@ -44,6 +44,12 @@ export const routes: Routes = [
     loadComponent: () => import('@azra/pages').then((m) => m.ContentComponent),
   },
   {
+    path: PATHS.contentHandset,
+    title: 'TBOA',
+    loadComponent: () =>
+      import('@azra/pages').then((m) => m.ContentHandsetComponent),
+  },
+  {
     path: '**',
     title: 'Azra Not Found',
     loadComponent: () => import('@azra/pages').then((m) => m.NotFoundComponent),

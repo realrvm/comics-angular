@@ -23,6 +23,7 @@ export class SidebarComponent {
   public desktop = Responsive.DESKTOP
 
   public onChapterClick(title: string) {
+    this.router.navigate(['content-handset'])
     this.contentService.findComicByChapterClick(title)
   }
 

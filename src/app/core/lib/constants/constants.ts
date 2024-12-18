@@ -1,4 +1,4 @@
-export const DEBOUNCE_TIME = 200
+export const DEBOUNCE_TIME = 100
 
 export const enum Responsive {
   HANDSET = 'handset',

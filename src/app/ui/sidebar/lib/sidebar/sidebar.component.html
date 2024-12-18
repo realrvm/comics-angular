@@ -33,10 +33,18 @@
       Chapters
     </h2>
     <azra-sprite />
-    <span
-      class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
-      >Chapter One</span
-    >
+    <div class="flex flex-col gap-4 mt-5">
+      @let chaps = chapters();
+      @for (chapter of chaps; track $index) {
+        <button (click)="onChapterClick(chapter.title)">
+          <span
+            class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
+          >
+            {{ chapter.title }} ({{ chapter.amounts }})
+          </span>
+        </button>
+      }
+    </div>
   </div>
 
   <div class="flex flex-col items-center gap-4">
