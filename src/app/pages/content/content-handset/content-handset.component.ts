@@ -10,35 +10,21 @@ import {
   viewChild,
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { Router } from '@angular/router'
 
 import { DebounceDirective } from '@azra/core'
 
-import { ContentService } from './content.service'
+import { ContentService } from '../content.service'
+import { getCorrectValue } from '../content.utils'
 
 @Component({
   selector: 'azra-content-handset',
   standalone: true,
   imports: [DebounceDirective, NgClass],
-  template: `
-    <div class="w-full">
-      @if (hasNoImage()) {
-        <p class="text-beige text-2xl font-vinque">Loading...</p>
-      }
-      <img
-        #img
-        class="object-contain w-full"
-        [ngClass]="hasNoImage() ? 'h-0' : 'h-full'"
-        [alt]="hasNoImage() ? '' : 'azra_image'"
-        (debounceClick)="handleOnImgClick()"
-        azraDebounce
-        [debounceTime]="250"
-        tabindex="-1"
-      />
-    </div>
-  `,
+  templateUrl: './content-handset.component.html',
   styles: `
     :host {
-      @apply block h-screen bg-black p-1;
+      @apply block bg-black h-screen p-1;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,12 +34,18 @@ export class ContentHandsetComponent implements OnInit {
   private readonly subject = this.contentService.subject
   private readonly blob$ = this.contentService.comicBlob$
   private readonly destroyRef = inject(DestroyRef)
+  private readonly router = inject(Router)
 
   public hasNoImage = signal<boolean>(true)
+  public currentImageNumber = signal(1)
 
   public image = viewChild<ElementRef<HTMLImageElement>>('img')
 
   ngOnInit(): void {
+    this.subject
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((num) => this.currentImageNumber.set(num))
+
     this.blob$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((blob) => {
       if (blob) {
         this.hasNoImage.set(false)
@@ -62,7 +54,7 @@ export class ContentHandsetComponent implements OnInit {
 
         const image = this.image() as ElementRef<HTMLImageElement>
 
-        image.nativeElement.src = url
+        if (image) image.nativeElement.src = url
       }
     })
   }
@@ -71,5 +63,19 @@ export class ContentHandsetComponent implements OnInit {
     const value = this.subject.getValue()
 
     this.subject.next(value + 1)
+  }
+
+  public goToChapters(): void {
+    this.router.navigate(['/content'])
+  }
+
+  public onNextSlideClick(): void {
+    const value = this.subject.getValue()
+    this.subject.next(value + 1)
+  }
+
+  public onPrevSlideClick(): void {
+    const value = this.subject.getValue()
+    this.subject.next(getCorrectValue(value))
   }
 }

@@ -1,0 +1,56 @@
+<div class="w-full h-full flex flex-col py-16 gap-10 justify-evenly">
+  @if (hasNoImage()) {
+    <p class="ml-10 mt-10 text-beige text-2xl font-vinque">Loading...</p>
+  }
+  <div class="flex flex-col flex-1 gap-5">
+    <img
+      #img
+      class="object-contain w-full"
+      [ngClass]="hasNoImage() ? 'h-0' : 'h-full'"
+      [alt]="hasNoImage() ? '' : 'azra_image'"
+      (debounceClick)="handleOnImgClick()"
+      azraDebounce
+      [debounceTime]="500"
+      tabindex="-1"
+    />
+  </div>
+  <div class="flex flex-col gap-5">
+    <span class="text-beige text-3xl text-center font-yatra">{{
+      currentImageNumber()
+    }}</span>
+    <div class="flex items-center justify-between mb-10 mt-auto">
+      <button
+        (debounceClick)="onPrevSlideClick()"
+        azraDebounce
+        [debounceTime]="500"
+      >
+        <img
+          src="assets/images/arrow-left.png"
+          alt="arrow_left"
+          width="40"
+          height="10"
+        />
+      </button>
+      <button
+        class="text-beige font-vinque font-bold text-xl uppercase"
+        (debounceClick)="goToChapters()"
+        azraDebounce
+        [debounceTime]="500"
+      >
+        Chapters
+      </button>
+      <button
+        (debounceClick)="onNextSlideClick()"
+        azraDebounce
+        [debounceTime]="500"
+      >
+        <img
+          src="assets/images/arrow-right.png"
+          alt="arrow_right"
+          width="40"
+          height="10"
+        />
+      </button>
+    </div>
+  </div>
+</div>

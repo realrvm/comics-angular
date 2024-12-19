@@ -6,7 +6,11 @@ import { RouterOutlet } from '@angular/router'
   standalone: true,
   imports: [RouterOutlet],
   template: '<router-outlet />',
-  styles: '',
+  styles: `
+    :host {
+      @apply block bg-black min-h-screen;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {}
