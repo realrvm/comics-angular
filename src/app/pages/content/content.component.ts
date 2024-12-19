@@ -15,6 +15,7 @@ import { DebounceDirective, Responsive, ResponsiveDirective } from '@azra/core'
 import { SidebarComponent } from '@azra/ui/sidebar'
 
 import { ContentService } from './content.service'
+import { getCorrectValue } from './content.utils'
 
 @Component({
   selector: 'azra-content',
@@ -52,7 +53,7 @@ export class ContentComponent implements OnInit {
 
         const image = this.image() as ElementRef<HTMLImageElement>
 
-        image.nativeElement.src = url
+        if (image) image.nativeElement.src = url
       }
     })
   }
@@ -70,17 +71,11 @@ export class ContentComponent implements OnInit {
     const value = this.subject.getValue()
 
     if (event.code === 'ArrowLeft') {
-      this.subject.next(this.getCorrectValue(value))
+      this.subject.next(getCorrectValue(value))
     }
 
     if (event.code === 'ArrowRight') {
       this.subject.next(value + 1)
     }
-  }
-
-  private getCorrectValue(value = 1): number {
-    if (value <= 1) return 1
-
-    return value - 1
   }
 }

@@ -30,3 +30,9 @@ const query = qs.stringify(
 )
 
 export const contentUrl = `/contents?${query}`
+
+export function getCorrectValue(value = 1): number {
+  if (value <= 1) return 1
+
+  return value - 1
+}
