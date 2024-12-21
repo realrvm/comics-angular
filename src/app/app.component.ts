@@ -8,7 +8,7 @@ import { RouterOutlet } from '@angular/router'
   template: '<router-outlet />',
   styles: `
     :host {
-      @apply block bg-black min-h-screen;
+      @apply block bg-black min-h-full h-full;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

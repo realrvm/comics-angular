@@ -24,7 +24,7 @@ import { getCorrectValue } from '../content.utils'
   templateUrl: './content-handset.component.html',
   styles: `
     :host {
-      @apply block bg-black h-screen p-1;
+      @apply block bg-black p-1;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,5 +77,9 @@ export class ContentHandsetComponent implements OnInit {
   public onPrevSlideClick(): void {
     const value = this.subject.getValue()
     this.subject.next(getCorrectValue(value))
+  }
+
+  public goToMainPage(): void {
+    this.router.navigate(['/'])
   }
 }
