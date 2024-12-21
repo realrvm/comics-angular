@@ -137,12 +137,16 @@ export class ContentService {
     }),
   )
 
-  public findComicByChapterClick(title: string) {
+  public findComicByChapterClick(title: string): void {
     const contentAzra = this.contentTitleAndId().find(
       (item) => item.title === title,
     )
 
     if (contentAzra) this.subject.next(contentAzra.imgId)
+  }
+
+  public toTheLastComicRead(comicId:number): void {
+    this.subject.next(comicId)
   }
 
   private checkAndCacheImage(id: number, blob: Blob) {
