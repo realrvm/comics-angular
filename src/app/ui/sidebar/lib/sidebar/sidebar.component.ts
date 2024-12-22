@@ -1,6 +1,8 @@
 import { NgClass } from '@angular/common'
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
+import { InputNumber } from 'primeng/inputnumber'
 
 import {
   LocalStorageService,
@@ -13,7 +15,13 @@ import { ContentService } from '@azra/pages'
 @Component({
   selector: 'azra-sidebar',
   standalone: true,
-  imports: [ResponsiveDirective, SpriteComponent, NgClass],
+  imports: [
+    ResponsiveDirective,
+    SpriteComponent,
+    NgClass,
+    FormsModule,
+    InputNumber,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +37,7 @@ export class SidebarComponent {
 
   public handset = Responsive.HANDSET
   public desktop = Responsive.DESKTOP
+  public comicId = 1
 
   public onChapterClick(title: string): void {
     this.router.navigate(['content-handset'])
@@ -44,5 +53,9 @@ export class SidebarComponent {
 
     this.router.navigate(['content-handset'])
     this.contentService.toTheLastComicRead(lastReadComicId)
+  }
+
+  public onGetComicId(): void {
+    console.log(this.comicId)
   }
 }

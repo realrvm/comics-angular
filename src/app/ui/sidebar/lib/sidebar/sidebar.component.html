@@ -38,9 +38,22 @@
         <span
           class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
         >
-          To The Last Comic Read
+          Last Viewed Page
         </span>
       </button>
+      <div class="flex gap-2">
+        <label for="integeronly" class="text-beige font-yatra text-sm"
+          >Or Jump To Page</label
+        >
+        <p-inputnumber inputId="integeronly" [(ngModel)]="comicId" />
+        <button
+          class="text-beige font-yatra text-sm bg-transparent"
+          (click)="onGetComicId()"
+        >
+          Go!
+        </button>
+      </div>
+      <azra-sprite />
       @let chaps = chapters();
       @for (chapter of chaps; track $index) {
         <button (click)="onChapterClick(chapter.title)">
@@ -61,7 +74,7 @@
       class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
       (keypress)="goHome()"
       (click)="goHome()"
-      >To The Main Page</span
+      >Home Page</span
     >
   </div>
 </div>
