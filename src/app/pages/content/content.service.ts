@@ -145,7 +145,7 @@ export class ContentService {
     if (contentAzra) this.subject.next(contentAzra.imgId)
   }
 
-  public toTheLastComicRead(comicId:number): void {
+  public toTheComic(comicId: number): void {
     this.subject.next(comicId)
   }
 

@@ -14,7 +14,6 @@ import { ContentService } from '@azra/pages'
 
 @Component({
   selector: 'azra-sidebar',
-  standalone: true,
   imports: [
     ResponsiveDirective,
     SpriteComponent,
@@ -52,10 +51,16 @@ export class SidebarComponent {
     const lastReadComicId = Number(this.localStorageValue) || 1
 
     this.router.navigate(['content-handset'])
-    this.contentService.toTheLastComicRead(lastReadComicId)
+    this.contentService.toTheComic(lastReadComicId)
   }
 
   public onGetComicId(): void {
-    console.log(this.comicId)
+    this.router.navigate(['content-handset'])
+
+    if (this.comicId < 1 && this.comicId === null) {
+      this.contentService.toTheComic(1)
+    } else {
+      this.contentService.toTheComic(this.comicId)
+    }
   }
 }

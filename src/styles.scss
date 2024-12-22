@@ -1,8 +1,20 @@
+@use 'sass:meta';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import 'assets/theme.scss';
+@include meta.load-css('assets/theme.scss');
+
+@layer tailwind-base, primeng, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
 
 *:focus-visible {
   outline: none;

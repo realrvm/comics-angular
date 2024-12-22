@@ -4,7 +4,6 @@ import { IconComponent } from '@azra/icons'
 
 @Component({
   selector: 'azra-sprite',
-  standalone: true,
   imports: [IconComponent],
   templateUrl: './sprite.component.html',
   styles: '',

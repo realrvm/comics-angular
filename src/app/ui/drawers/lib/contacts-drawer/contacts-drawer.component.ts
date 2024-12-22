@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core'
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
-import { SidebarModule } from 'primeng/sidebar'
+import { DrawerModule } from 'primeng/drawer'
 import { shareReplay, tap } from 'rxjs'
 
 import { DrawerService } from '@azra/core'
@@ -10,12 +10,11 @@ import { ContactsDrawerService } from './contacts-drawer.service'
 
 @Component({
   selector: 'azra-contacts-drawer',
-  standalone: true,
-  imports: [SidebarModule, SpriteComponent],
+  imports: [DrawerModule, SpriteComponent],
   templateUrl: './contacts-drawer.component.html',
   styles: `
     :host {
-      ::ng-deep .p-sidebar-right.p-sidebar {
+      ::ng-deep .p-drawer-right.p-drawer {
         @apply overflow-y-auto;
       }
     }

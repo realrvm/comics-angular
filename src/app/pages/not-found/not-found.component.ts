@@ -3,7 +3,6 @@ import { Router } from '@angular/router'
 
 @Component({
   selector: 'azra-not-found',
-  standalone: true,
   imports: [],
   templateUrl: './not-found.component.html',
   styles: `
