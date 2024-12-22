@@ -19,7 +19,6 @@ import { getCorrectValue } from '../content.utils'
 
 @Component({
   selector: 'azra-content-handset',
-  standalone: true,
   imports: [DebounceDirective, NgClass],
   templateUrl: './content-handset.component.html',
   styles: `

@@ -26,5 +26,5 @@ module.exports = {
       black: 'var(--font-black)',
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-primeui')],
 }

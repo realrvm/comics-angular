@@ -8,7 +8,6 @@ import { TransitionDirective } from '@azra/ui/utils'
 
 @Component({
   selector: 'azra-header',
-  standalone: true,
   imports: [
     CommonModule,
     SpriteComponent,

@@ -19,7 +19,6 @@ import { getCorrectValue } from './content.utils'
 
 @Component({
   selector: 'azra-content',
-  standalone: true,
   imports: [ResponsiveDirective, DebounceDirective, SidebarComponent, NgClass],
   templateUrl: './content.component.html',
   styles: `

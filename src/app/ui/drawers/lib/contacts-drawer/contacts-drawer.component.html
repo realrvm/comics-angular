@@ -1,6 +1,11 @@
 @let data = contactsData();
 @let error = contactsError();
-<p-sidebar [(visible)]="contactsDrawer" position="right" (onHide)="onClose()">
+<p-drawer
+  [(visible)]="contactsDrawer"
+  position="right"
+  (onHide)="onClose()"
+  styleClass="p-10 overflow-y-auto w-full md:w-[25%]"
+>
   <ng-template pTemplate="headless">
     <div class="font-yatra flex flex-col items-center pb-10">
       @if (data) {
@@ -48,4 +53,4 @@
       </button>
     </div>
   </ng-template>
-</p-sidebar>
+</p-drawer>
