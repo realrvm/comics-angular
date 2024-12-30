@@ -39,11 +39,16 @@ export class ContentComponent implements OnInit {
 
   public readonly desktop = Responsive.DESKTOP
   public readonly handset = Responsive.HANDSET
+  public currentImageNumber = signal(1)
 
   public image = viewChild<ElementRef<HTMLImageElement>>('img')
   public hasNoImage = signal<boolean>(true)
 
   ngOnInit(): void {
+    this.subject
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((num) => this.currentImageNumber.set(num))
+
     this.blob$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((blob) => {
       if (blob) {
         this.hasNoImage.set(false)

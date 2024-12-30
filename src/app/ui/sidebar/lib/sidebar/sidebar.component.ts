@@ -68,4 +68,12 @@ export class SidebarComponent {
       this.contentService.toTheComic(this.comicId)
     }
   }
+
+  public onGetComicIdDesktop(): void {
+    if (this.comicId < 1 && this.comicId === null) {
+      this.contentService.toTheComic(1)
+    } else {
+      this.contentService.toTheComic(this.comicId)
+    }
+  }
 }

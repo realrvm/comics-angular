@@ -10,6 +10,18 @@
     of Azra
   </h2>
   <azra-sprite />
+  <div class="flex items-center gap-8">
+    <label class="text-beige font-yatra text-sm">Jump To Page</label>
+    <p-inputnumber [(ngModel)]="comicId" maxlength="4" [useGrouping]="false" />
+    <button
+      type="button"
+      class="text-beige font-yatra text-sm py-1 px-2 cursor-pointer hover:text-light transition duration-200 border border-beige hover:border-light rounded-lg"
+      (click)="onGetComicIdDesktop()"
+    >
+      Go!
+    </button>
+  </div>
+  <azra-sprite />
 
   @let chaps = chapters();
   @for (chapter of chaps; track $index) {
