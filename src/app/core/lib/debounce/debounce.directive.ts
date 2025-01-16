@@ -1,12 +1,11 @@
 import {
   DestroyRef,
   Directive,
-  EventEmitter,
   HostListener,
   inject,
   input,
-  OnInit,
-  Output,
+  type OnInit,
+  output,
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { debounceTime, Subject } from 'rxjs'
@@ -16,12 +15,12 @@ import { debounceTime, Subject } from 'rxjs'
   standalone: true,
 })
 export class DebounceDirective implements OnInit {
-  public debounceTime = input(500)
-  @Output() debounceClick = new EventEmitter()
-  private readonly clicks = new Subject()
+  public readonly debounceTime = input.required<number>()
+  public readonly debounceClick = output<Event>()
+  private readonly clicks = new Subject<Event>()
   private readonly destroyRef = inject(DestroyRef)
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.clicks
       .pipe(
         debounceTime(this.debounceTime()),

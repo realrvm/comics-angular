@@ -1,22 +1,25 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http'
 import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-} from '@angular/common/http'
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
+  type ApplicationConfig,
+  isDevMode,
+  provideZoneChangeDetection,
+} from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
 import { provideRouter } from '@angular/router'
-import { environment } from '@env/environment'
+import { provideServiceWorker } from '@angular/service-worker'
+import { API_URL, errorHandlerInterceptor, preset } from '@azra/core'
+import { environment } from '@azra/env/environment'
 import { providePrimeNG } from 'primeng/config'
 
-import { preset } from './app.preset'
 import { routes } from './app.routes'
-import { API_URL, errorHandlerInterceptor } from './core'
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideAnimations(),
+    provideHttpClient(withInterceptors([errorHandlerInterceptor])),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
@@ -29,7 +32,10 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideHttpClient(withFetch(), withInterceptors([errorHandlerInterceptor])),
     { provide: API_URL, useValue: environment.api_url },
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 }

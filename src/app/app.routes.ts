@@ -1,5 +1,4 @@
-import { Routes } from '@angular/router'
-
+import type { Routes } from '@angular/router'
 import { PATHS } from '@azra/core'
 import { HomeComponent } from '@azra/pages'
 
@@ -16,24 +15,24 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('@azra/ui/layout').then((m) => m.LayoutComponent),
+          import('@azra/layout').then((m) => m.LayoutComponent),
       },
       {
         path: '',
         loadComponent: () =>
-          import('@azra/ui/layout').then((m) => m.HeaderComponent),
+          import('@azra/layout').then((m) => m.HeaderComponent),
         outlet: 'header',
       },
       {
         path: '',
         loadComponent: () =>
-          import('@azra/ui/drawers').then((m) => m.AboutDrawerComponent),
-        outlet: 'about-drawer',
+          import('@azra/drawers').then((m) => m.AboutsDrawerComponent),
+        outlet: 'abouts-drawer',
       },
       {
         path: '',
         loadComponent: () =>
-          import('@azra/ui/drawers').then((m) => m.ContactsDrawerComponent),
+          import('@azra/drawers').then((m) => m.ContactsDrawerComponent),
         outlet: 'contacts-drawer',
       },
     ],
@@ -44,14 +43,12 @@ export const routes: Routes = [
     loadComponent: () => import('@azra/pages').then((m) => m.ContentComponent),
   },
   {
-    path: PATHS.contentHandset,
+    path: PATHS.handset,
     title: 'TBOA',
-    loadComponent: () =>
-      import('@azra/pages').then((m) => m.ContentHandsetComponent),
+    loadComponent: () => import('@azra/pages').then((m) => m.HandsetComponent),
   },
   {
     path: '**',
-    title: 'Azra Not Found',
-    loadComponent: () => import('@azra/pages').then((m) => m.NotFoundComponent),
+    redirectTo: 'home',
   },
 ]

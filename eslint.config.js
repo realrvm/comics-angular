@@ -2,9 +2,14 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
-const simpleImportSort = require("eslint-plugin-simple-import-sort");
+const eslintPluginSimpleImportSort = require("eslint-plugin-simple-import-sort");
+const eslintPluginImport = require("eslint-plugin-import");
+const eslintConfigPrettier = require("eslint-config-prettier");
 
 module.exports = tseslint.config(
+  {
+    ignores: ["**/dist", "**/public"],
+  },
   {
     files: ["**/*.ts"],
     extends: [
@@ -12,58 +17,15 @@ module.exports = tseslint.config(
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
-      {
-        plugins: {
-          "simple-import-sort": simpleImportSort,
-        },
-        rules: {
-          "simple-import-sort/imports": [
-            "error",
-            {
-              groups: [
-                ["^\\u0000"],
-                ["^@?(?!azra)\\w"],
-                ["^@azra?\\w"],
-                ["^\\w"],
-                ["^[^.]"],
-                ["^\\."],
-              ],
-            },
-          ],
-          "simple-import-sort/exports": "error",
-        },
-      },
     ],
     processor: angular.processInlineTemplates,
+    plugins: {
+      "simple-import-sort": eslintPluginSimpleImportSort,
+      import: eslintPluginImport,
+    },
     rules: {
-      "@angular-eslint/directive-selector": [
-        "error",
-        {
-          type: "attribute",
-          prefix: "azra",
-          style: "camelCase",
-        },
-      ],
-      "@angular-eslint/component-selector": [
-        "error",
-        {
-          type: "element",
-          prefix: "azra",
-          style: "kebab-case",
-        },
-      ],
       "@typescript-eslint/naming-convention": [
         "error",
-        {
-          selector: "default",
-          format: ["camelCase"],
-          leadingUnderscore: "allow",
-          trailingUnderscore: "allow",
-          filter: {
-            regex: "^(ts-jest|\\^.*)$",
-            match: false,
-          },
-        },
         {
           selector: "default",
           format: ["camelCase"],
@@ -94,20 +56,53 @@ module.exports = tseslint.config(
         },
       ],
       complexity: "error",
-      "max-len": [
-        "error",
-        {
-          code: 140,
-        },
-      ],
+      "max-len": ["error", { code: 80 }],
       "no-new-wrappers": "error",
       "no-throw-literal": "error",
+      "sort-imports": "off",
+      "import/no-unresolved": "off",
+      "import/named": "off",
+      "import/first": "off",
+      "simple-import-sort/exports": "error",
+      "simple-import-sort/imports": [
+        "error",
+        {
+          groups: [
+            ["^\\u0000"],
+            ["^@?(?!amz)\\w"],
+            ["^@amz?\\w"],
+            ["^\\w"],
+            ["^[^.]"],
+            ["^\\."],
+          ],
+        },
+      ],
+      "import/newline-after-import": "error",
+      "import/no-duplicates": "error",
       "@typescript-eslint/consistent-type-definitions": "error",
       "no-shadow": "off",
       "@typescript-eslint/no-shadow": "error",
       "no-invalid-this": "off",
       "@typescript-eslint/no-invalid-this": ["warn"],
       "@angular-eslint/no-host-metadata-property": "off",
+      "no-extra-semi": "off",
+      "@angular-eslint/directive-selector": [
+        "error",
+        {
+          type: "attribute",
+          prefix: "azra",
+          style: "camelCase",
+        },
+      ],
+      "@angular-eslint/component-selector": [
+        "error",
+        {
+          type: "element",
+          prefix: "azra",
+          style: "kebab-case",
+        },
+      ],
+      "@typescript-eslint/consistent-type-imports": "error",
     },
   },
   {
@@ -118,4 +113,5 @@ module.exports = tseslint.config(
     ],
     rules: {},
   },
+  eslintConfigPrettier,
 );

@@ -1,79 +1,76 @@
-import { NgClass } from '@angular/common'
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
-import { FormsModule } from '@angular/forms'
-import { Router } from '@angular/router'
-import { InputNumber } from 'primeng/inputnumber'
-
+import { AsyncPipe } from '@angular/common'
 import {
-  LocalStorageService,
-  Responsive,
-  ResponsiveDirective,
-} from '@azra/core'
-import { SpriteComponent } from '@azra/icons'
-import { ContentService } from '@azra/pages'
+  ChangeDetectionStrategy,
+  Component,
+  //effect,
+  inject,
+} from '@angular/core'
+import { toSignal } from '@angular/core/rxjs-interop'
+import { FormsModule } from '@angular/forms'
+import { Router, RouterLink } from '@angular/router'
+import { ContentApiService, ResponsiveService } from '@azra/core'
+import { SeparatorIconComponent } from '@azra/icons'
+import { InputNumber } from 'primeng/inputnumber'
 
 @Component({
   selector: 'azra-sidebar',
   imports: [
-    ResponsiveDirective,
-    SpriteComponent,
-    NgClass,
-    FormsModule,
+    SeparatorIconComponent,
+    RouterLink,
     InputNumber,
+    FormsModule,
+    AsyncPipe,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
+  providers: [ResponsiveService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
+  private readonly contentApiService = inject(ContentApiService)
+  private readonly responsiveService = inject(ResponsiveService)
   private readonly router = inject(Router)
-  private readonly contentService = inject(ContentService)
-  public readonly chapters = this.contentService.contentData.asReadonly()
-  private readonly localStorageService = inject(LocalStorageService)
-  private readonly localStorageValue = this.localStorageService.get(
-    'azraLastImageNumber',
-  ) as string
 
-  public handset = Responsive.HANDSET
-  public desktop = Responsive.DESKTOP
-  public comicId = 1
+  public readonly isHandset$ = this.responsiveService.isHandset$
+  private readonly isHandset = toSignal(this.isHandset$, {
+    initialValue: false,
+  })
+
+  public readonly contents = this.contentApiService.contentData
+  public readonly maxAmount = this.contentApiService.contentImagesAmount
+
+  public pageId: number | null = null
 
   public onChapterClick(title: string): void {
-    this.router.navigate(['content'])
-    this.contentService.findComicByChapterClick(title)
-  }
+    this.contentApiService.findComicByChapterClick(title)
 
-  public onChapterClickHandset(title: string): void {
-    this.router.navigate(['content-handset'])
-    this.contentService.findComicByChapterClick(title)
-  }
-
-  public goHome(): void {
-    this.router.navigate([''])
-  }
-
-  public toTheLastComicRead(): void {
-    const lastReadComicId = Number(this.localStorageValue) || 1
-
-    this.router.navigate(['content-handset'])
-    this.contentService.toTheComic(lastReadComicId)
-  }
-
-  public onGetComicId(): void {
-    this.router.navigate(['content-handset'])
-
-    if (this.comicId < 1 && this.comicId === null) {
-      this.contentService.toTheComic(1)
-    } else {
-      this.contentService.toTheComic(this.comicId)
+    if (this.isHandset()) {
+      this.router.navigate(['/handset'])
     }
   }
 
-  public onGetComicIdDesktop(): void {
-    if (this.comicId < 1 && this.comicId === null) {
-      this.contentService.toTheComic(1)
+  public toLastViewedPage(): void {
+    this.contentApiService.toLastViewedPage()
+    this.router.navigate(['/handset'])
+  }
+
+  public onJumpToPage(): void {
+    if (this.pageId === null || this.pageId < 1) {
+      this.contentApiService.toPage(1)
     } else {
-      this.contentService.toTheComic(this.comicId)
+      this.contentApiService.toPage(this.pageId)
     }
+
+    if (this.isHandset()) {
+      this.router.navigate(['/handset'])
+    }
+
+    this.pageId = null
+  }
+
+  public onPressJumpToPage(e: KeyboardEvent): void {
+    if (e.key !== 'Enter') return
+
+    this.onJumpToPage()
   }
 }

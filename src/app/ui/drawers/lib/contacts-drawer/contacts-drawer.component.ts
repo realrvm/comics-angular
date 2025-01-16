@@ -1,43 +1,37 @@
-import { Component, inject } from '@angular/core'
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  type OnInit,
+} from '@angular/core'
+import { DrawersApiService } from '@azra/core'
+import { DrawersService } from '@azra/drawers'
+import { SeparatorIconComponent } from '@azra/icons'
 import { DrawerModule } from 'primeng/drawer'
-import { shareReplay, tap } from 'rxjs'
-
-import { DrawerService } from '@azra/core'
-import { SpriteComponent } from '@azra/icons'
-
-import { ContactsDrawerService } from './contacts-drawer.service'
 
 @Component({
   selector: 'azra-contacts-drawer',
-  imports: [DrawerModule, SpriteComponent],
+  imports: [SeparatorIconComponent, DrawerModule],
   templateUrl: './contacts-drawer.component.html',
-  styles: `
-    :host {
-      ::ng-deep .p-drawer-right.p-drawer {
-        @apply overflow-y-auto;
-      }
-    }
-  `,
+  styles: ``,
+  providers: [DrawersApiService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContactsDrawerComponent {
-  public contactsDrawer!: boolean
-  private readonly contactsService = inject(ContactsDrawerService)
+export class ContactsDrawerComponent implements OnInit {
+  private readonly contactsService = inject(DrawersApiService)
+  private readonly contactsDrawerService = inject(DrawersService)
 
-  constructor(private drawerService: DrawerService) {
-    toObservable(this.drawerService.contactsDrawerVisibility)
-      .pipe(
-        tap((val) => (this.contactsDrawer = val)),
-        shareReplay(1),
-        takeUntilDestroyed(),
-      )
-      .subscribe()
+  public readonly contactsValue = this.contactsService.drawersValue
+  public readonly errorMessage = this.contactsService.errorMessage
+  public readonly contactsLoading = this.contactsService.drawersLoading
+
+  public contactsDrawer = this.contactsDrawerService.isContactsDrawerOpen
+
+  public onHide(): void {
+    this.contactsDrawer.set(false)
   }
 
-  public onClose(): void {
-    this.drawerService.setContactsDrawerVisibility(false)
+  public ngOnInit(): void {
+    this.contactsService.slug.set('/api/contacts')
   }
-
-  public readonly contactsData = this.contactsService.contactsDataResult
-  public readonly contactsError = this.contactsService.contactsDataError
 }

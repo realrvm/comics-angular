@@ -1,5 +1,0 @@
-@mixin make-transition() {
-  & {
-    @apply transition duration-300 cursor-pointer hover:text-beige;
-  }
-}

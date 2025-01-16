@@ -2,7 +2,5 @@ export const PATHS = {
   home: 'home',
   layout: 'layout',
   content: 'content',
-  contentHandset: 'content-handset',
+  handset: 'handset',
 }
-
-export type PathValues = (typeof PATHS)[keyof typeof PATHS]

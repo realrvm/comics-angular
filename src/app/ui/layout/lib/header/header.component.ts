@@ -1,38 +1,37 @@
 import { CommonModule } from '@angular/common'
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { RouterLink } from '@angular/router'
-
-import { DrawerService, Responsive, ResponsiveDirective } from '@azra/core'
-import { SpriteComponent } from '@azra/icons'
-import { TransitionDirective } from '@azra/ui/utils'
+import { TransitionDirective } from '@azra/core'
+import { DrawersService } from '@azra/drawers'
+import { SeparatorIconComponent } from '@azra/icons'
 
 @Component({
   selector: 'azra-header',
   imports: [
     CommonModule,
-    SpriteComponent,
-    TransitionDirective,
-    ResponsiveDirective,
+    SeparatorIconComponent,
     RouterLink,
+    TransitionDirective,
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+  styles: `
+    :host {
+      @apply block h-full md:h-auto;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [],
 })
 export class HeaderComponent {
-  private drawerService = inject(DrawerService)
+  private readonly drawerService = inject(DrawersService)
 
-  public isAboutActive = this.drawerService.aboutDrawerVisibility
-  public isContactsActive = this.drawerService.contactsDrawerVisibility
-  public desktop = Responsive.DESKTOP
-  public handset = Responsive.HANDSET
+  public readonly aboutsDrawerOpen = this.drawerService.isAboutsDrawerOpen
+  public readonly contactsDrawerOpen = this.drawerService.isContactsDrawerOpen
 
-  public setContactsDrawerVisible(): void {
-    this.drawerService.setContactsDrawerVisibility(true)
+  public onShowContacts(): void {
+    this.contactsDrawerOpen.set(true)
   }
 
-  public setAboutDrawerVisible(): void {
-    this.drawerService.setAboutDrawerVisibility(true)
+  public onShowAbouts(): void {
+    this.aboutsDrawerOpen.set(true)
   }
 }

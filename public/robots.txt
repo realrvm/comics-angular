@@ -5,5 +5,5 @@ User-agent: Yandex
 Disallow: /api
 Clean-param: bonus&utm_source&utm_medium&utm_campaign&utm_term&utm_content&click_id&appstore&platform
 
-Host: https://blood-of-azra.netlify.app/
-Sitemap: https://blood-of-azra.netlify.app/sitemap.xml
+Host: https://thebloodofazra.com/
+Sitemap: https://thebloodofazra.com/sitemap.xml

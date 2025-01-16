@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router'
 @Component({
   selector: 'azra-root',
   imports: [RouterOutlet],
-  template: '<router-outlet />',
+  template: `<router-outlet />`,
   styles: `
     :host {
       @apply block bg-black min-h-full h-full;

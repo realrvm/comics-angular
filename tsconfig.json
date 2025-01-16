@@ -12,27 +12,20 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
     "baseUrl": ".",
     "paths": {
-      "@env/*": ["src/environments/*"],
+      "@azra/env/*": ["src/environments/*"],
       "@azra/core": ["src/app/core/index.ts"],
-      "@azra/ui/layout": ["src/app/ui/layout/index.ts"],
-      "@azra/ui/utils": ["src/app/ui/utils/index.ts"],
-      "@azra/ui/drawers": ["src/app/ui/drawers/index.ts"],
-      "@azra/ui/sidebar": ["src/app/ui/sidebar/index.ts"],
-      "@azra/pages": ["src/app/pages/index.ts"],
-      "@azra/icons": ["src/app/ui/icons/index.ts"]
+      "@azra/layout": ["src/app/ui/layout/index.ts"],
+      "@azra/icons": ["src/app/ui/icons/index.ts"],
+      "@azra/drawers": ["src/app/ui/drawers/index.ts"],
+      "@azra/sidebar": ["src/app/ui/sidebar/index.ts"],
+      "@azra/pages" :["src/app/pages/index.ts"]
     }
   },
   "angularCompilerOptions": {

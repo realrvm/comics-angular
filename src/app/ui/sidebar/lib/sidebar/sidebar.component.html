@@ -1,96 +1,140 @@
-<div class="flex flex-col items-center h-full" *azraResponsive="desktop">
-  <h2
-    tabindex="0"
-    class="text-beige font-vinque text-[48px] uppercase text-center leading-[52px] cursor-pointer hover:text-light transition duration-200"
-    (keypress)="goHome()"
-    (click)="goHome()"
-  >
-    The Blood
-    <br />
-    of Azra
-  </h2>
-  <azra-sprite />
-  <div class="flex items-center gap-8">
-    <label class="text-beige font-yatra text-sm">Jump To Page</label>
-    <p-inputnumber [(ngModel)]="comicId" maxlength="4" [useGrouping]="false" />
-    <button
-      type="button"
-      class="text-beige font-yatra text-sm py-1 px-2 cursor-pointer hover:text-light transition duration-200 border border-beige hover:border-light rounded-lg"
-      (click)="onGetComicIdDesktop()"
-    >
-      Go!
-    </button>
-  </div>
-  <azra-sprite />
-
-  @let chaps = chapters();
-  @for (chapter of chaps; track $index) {
-    <button (click)="onChapterClick(chapter.title)">
-      <h4
-        class="text-2xl font-vinque text-center mt-2 mb-4 uppercase"
-        [ngClass]="chapter.active ? 'text-beige' : 'text-light'"
+@if (isHandset$ | async) {
+  <div class="flex flex-col items-center justify-between h-full w-full">
+    <div class="flex flex-col items-center">
+      <h2
+        class="text-3xl font-vinque text-center text-beige mt-2 mb-4 uppercase"
       >
-        {{ chapter.title }}
-      </h4>
-    </button>
-  }
-</div>
-
-<div
-  class="flex flex-col items-center justify-between h-full w-full"
-  *azraResponsive="handset"
->
-  <div class="flex flex-col items-center">
-    <h2 class="text-3xl font-vinque text-center text-beige mt-2 mb-4 uppercase">
-      Chapters
-    </h2>
-    <azra-sprite />
-    <div class="flex flex-col items-center gap-5 mt-5">
-      <button (click)="toTheLastComicRead()">
-        <span
-          class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
-        >
-          Last Viewed Page
-        </span>
-      </button>
-      <div class="flex items-center gap-8">
-        <label class="text-beige font-yatra text-sm">Or Jump To Page</label>
-        <p-inputnumber
-          [(ngModel)]="comicId"
-          maxlength="4"
-          [useGrouping]="false"
-          autofocus
-        />
-        <button
-          type="button"
-          class="text-beige font-yatra text-sm py-1 px-2 cursor-pointer hover:text-light transition duration-200 border border-beige hover:border-light rounded-lg"
-          (click)="onGetComicId()"
-        >
-          Go!
-        </button>
-      </div>
-      <azra-sprite />
-      @let chaps = chapters();
-      @for (chapter of chaps; track $index) {
-        <button (click)="onChapterClickHandset(chapter.title)">
+        Chapters
+      </h2>
+      <img
+        src="assets/images/sprite.svg"
+        alt="main_page"
+        width="146"
+        height="53"
+      />
+      <div class="flex flex-col items-center gap-5 mt-5">
+        <button (click)="toLastViewedPage()">
           <span
             class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
           >
-            {{ chapter.title }}
+            Last Viewed Page
           </span>
         </button>
-      }
+        <div class="flex items-center gap-8">
+          <label class="text-beige font-yatra text-sm">Or Jump To Page</label>
+          <div class="flex flex-col items-center gap-2 translate-y-2">
+            <p-inputnumber
+              [(ngModel)]="pageId"
+              maxlength="4"
+              min="1"
+              [max]="maxAmount()"
+              [useGrouping]="false"
+              placeholder="1"
+              autofocus
+              (keypress)="onPressJumpToPage($event)"
+            />
+            <p class="text-beige font-yatra text-[10px]">
+              Max {{ maxAmount() }} pages
+            </p>
+          </div>
+          <button
+            (click)="onJumpToPage()"
+            type="button"
+            class="text-beige font-yatra text-sm py-1 px-2 cursor-pointer hover:text-light transition duration-200 border border-beige hover:border-light rounded-lg"
+          >
+            Go!
+          </button>
+        </div>
+        <img
+          src="assets/images/sprite.svg"
+          alt="main_page"
+          width="146"
+          height="53"
+        />
+        @let hbooks = contents();
+        @for (book of hbooks; track $index) {
+          <div class="w-2/3">
+            <h2 class="self-start text-xl font-vinque text-light">
+              {{ book.title }}
+            </h2>
+          </div>
+          @for (chapter of book.chapters; track $index) {
+            <button (click)="onChapterClick(chapter.title)">
+              <h4 class="text-xl font-vinque text-center text-light">
+                {{ chapter.title }}
+              </h4>
+            </button>
+          }
+        } @empty {
+          <h2 class="text-3xl font-vinque text-light">...</h2>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center gap-4">
+      <azra-separator-icon />
+      <a
+        class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
+        routerLink="/home"
+        >Home Page</a
+      >
     </div>
   </div>
-
-  <div class="flex flex-col items-center gap-4">
-    <azra-sprite />
-    <span
-      tabindex="0"
-      class="text-beige text-xl font-yatra cursor-pointer hover:text-light transition duration-200"
-      (keypress)="goHome()"
-      (click)="goHome()"
-      >Home Page</span
+} @else {
+  <div class="flex flex-col items-center h-full">
+    <a
+      class="text-beige font-vinque text-[48px] uppercase text-center leading-[52px] cursor-pointer hover:text-light transition duration-200"
+      routerLink="/home"
     >
+      The Blood
+      <br />
+      of Azra
+    </a>
+    <azra-separator-icon />
+    <div class="flex items-center gap-8 mb-3">
+      <label class="text-beige font-yatra text-sm">Jump To Page</label>
+      <div class="flex flex-col items-center gap-2 translate-y-2">
+        <p-inputnumber
+          [(ngModel)]="pageId"
+          maxlength="4"
+          min="1"
+          [max]="maxAmount()"
+          [useGrouping]="false"
+          placeholder="1"
+          (keypress)="onPressJumpToPage($event)"
+        />
+        <p class="text-beige font-yatra text-[10px]">
+          Max {{ maxAmount() }} pages
+        </p>
+      </div>
+      <button
+        (click)="onJumpToPage()"
+        type="button"
+        class="text-beige font-yatra text-sm py-1 px-2 cursor-pointer hover:text-light transition duration-200 border border-beige hover:border-light rounded-lg"
+      >
+        Go!
+      </button>
+    </div>
+    <azra-separator-icon />
+
+    @let books = contents();
+    @for (book of books; track $index) {
+      <div class="w-2/3 my-2">
+        <h2 class="self-start text-xl font-vinque text-light">
+          {{ book.title }}
+        </h2>
+      </div>
+      @for (chapter of book.chapters; track $index) {
+        <button (click)="onChapterClick(chapter.title)">
+          <h4
+            class="text-2xl font-vinque text-center mt-4 uppercase text-light cursor-pointer hover:text-beige transition duration-200"
+          >
+            {{ chapter.title }}
+          </h4>
+        </button>
+      }
+    } @empty {
+      <h2 class="text-3xl font-vinque text-light">...</h2>
+    }
   </div>
-</div>
+}

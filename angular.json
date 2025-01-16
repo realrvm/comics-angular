@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "comics2": {
+    "azra": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -40,26 +40,25 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/comics",
+            "outputPath": "dist/azra",
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
             "stylePreprocessorOptions": {
               "includePaths": [
                 "node_modules",
                 "./"
               ]
             },
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
               },
-              "src/_redirects",
               "src/assets"
             ],
             "styles": [
@@ -70,10 +69,10 @@
           "configurations": {
             "production": {
               "fileReplacements": [
-                {
+               {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
-                }
+              }
               ],
               "optimization": true,
               "namedChunks": false,
@@ -81,7 +80,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumError": "5MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -89,7 +88,8 @@
                   "maximumError": "10kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -104,10 +104,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "comics2:build:production"
+              "buildTarget": "azra:build:production"
             },
             "development": {
-              "buildTarget": "comics2:build:development"
+              "buildTarget": "azra:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -150,7 +150,7 @@
   },
   "cli": {
     "schematicCollections": [
-      "@angular-eslint/schematics"
+      "angular-eslint"
     ]
   }
 }
